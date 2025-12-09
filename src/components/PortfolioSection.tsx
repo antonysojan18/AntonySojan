@@ -77,13 +77,6 @@ const portfolioItems = [
     image: portfolioLandscape3,
     span: "",
   },
-  {
-    id: 10,
-    title: "Mountains",
-    category: "Landscape",
-    image: portfolioLandscape4,
-    span: "",
-  },
 ];
 
 const PortfolioSection = () => {
