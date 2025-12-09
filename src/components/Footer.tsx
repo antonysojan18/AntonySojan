@@ -13,8 +13,8 @@ const Footer = () => {
 
         {/* Copyright */}
         <p className="text-sm text-muted-foreground flex items-center gap-1">
-          © {currentYear} Antony Sojan. Made with{" "}
-          <Heart size={14} className="text-primary fill-primary" /> in India
+          © {currentYear} Antony Sojan. Made With{" "}
+          <Heart size={14} className="text-primary fill-primary" /> By Antony
         </p>
 
         {/* Quick Links */}
