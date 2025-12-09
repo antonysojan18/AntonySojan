@@ -74,7 +74,7 @@ const ContactSection = () => {
           reply_to: email,
           message,
         },
-        { publicKey: EMAILJS_PUBLIC_KEY },
+        EMAILJS_PUBLIC_KEY,
       );
 
       toast({
