@@ -26,8 +26,8 @@ const socials = [
   },
   {
     icon: Instagram,
-    label: "@tonywerks",
-    href: "https://instagram.com/tonywerks",
+    label: "@tony.werks",
+    href: "https://instagram.com/tony.werks",
   },
   {
     icon: Linkedin,
@@ -36,7 +36,7 @@ const socials = [
   },
 ];
 
-const EMAILJS_PUBLIC_KEY = "mX7V0Ym5LT1Dtw3PR";
+const EMAILJS_PUBLIC_KEY = "7BEAMQxQ2PNKDXbgl";
 const EMAILJS_SERVICE_ID = "service_wctgnfr";
 const EMAILJS_TEMPLATE_ID = "template_8gvqoru";
 
