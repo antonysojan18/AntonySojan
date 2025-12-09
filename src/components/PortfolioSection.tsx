@@ -10,6 +10,7 @@ import portfolioLandscape2 from "@/assets/portfolio-landscape-2.jpg";
 import portfolioBW1 from "@/assets/portfolio-bw-1.jpg";
 import portfolioLandscape3 from "@/assets/portfolio-landscape-3.jpg";
 import portfolioPortrait1 from "@/assets/portfolio-portrait-1.jpg";
+import portfolioLandscape4 from "@/assets/portfolio-landscape-4.jpg";
 
 type PortfolioItem = (typeof portfolioItems)[number];
 
@@ -75,6 +76,13 @@ const portfolioItems = [
     title: "Divine Light",
     category: "Landscape",
     image: portfolioLandscape3,
+    span: "",
+  },
+  {
+    id: 10,
+    title: "Mountains",
+    category: "Landscape",
+    image: portfolioLandscape4,
     span: "",
   },
 ];
