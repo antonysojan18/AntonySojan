@@ -159,7 +159,7 @@ const PortfolioSection = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://instagram.com/tonywerks"
+              href="https://instagram.com/tony.werks"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-full font-medium hover:bg-primary transition-colors duration-300"
