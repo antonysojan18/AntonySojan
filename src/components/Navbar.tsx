@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinks = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
   { name: "Projects", href: "#projects" },
-  { name: "Services", href: "#services" },
   { name: "Portfolio", href: "#portfolio" },
   { name: "Certificates", href: "#certificates" },
 ];
@@ -49,22 +49,28 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* CTA Button */}
-          <a
-            href="#contact"
-            className="hidden md:inline-flex btn-gold text-sm py-3 px-6"
-          >
-            Contact
-          </a>
+          {/* Theme Toggle & CTA Button */}
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
+            <a
+              href="#contact"
+              className="btn-gold text-sm py-3 px-6"
+            >
+              Contact
+            </a>
+          </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-foreground"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Controls */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-foreground"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

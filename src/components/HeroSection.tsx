@@ -38,15 +38,15 @@ const HeroSection = () => {
 
             {/* Title */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6 animate-fade-up delay-300">
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase">
+              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
                 Software Developer
               </span>
-              <Circle size={8} className="fill-primary text-primary" />
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase">
+              <Circle size={8} className="fill-primary text-primary transition-colors duration-300" />
+              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
                 Cinematographer
               </span>
-              <Circle size={8} className="fill-primary text-primary" />
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase">
+              <Circle size={8} className="fill-primary text-primary transition-colors duration-300" />
+              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
                 Designer
               </span>
             </div>
