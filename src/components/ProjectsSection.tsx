@@ -21,7 +21,7 @@ const projects: Project[] = [
     technologies: ["React", "TypeScript", "Supabase", "Tailwind CSS", "Vite"],
     category: "Game Development",
     githubUrl: "https://github.com/antonysojan18/BingoX",
-    liveUrl: "https://bingox.vercel.app/lobby",
+    liveUrl: "https://bingox.vercel.app",
     image: bingoxCover,
   },
   {
