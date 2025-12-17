@@ -1,5 +1,6 @@
 import { Code, ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import portfolioCover from "@/assets/portfolio-cover.jpg";
+import bingoxCover from "@/assets/bingox-cover.jpg";
 
 interface Project {
   id: number;
@@ -13,6 +14,16 @@ interface Project {
 }
 
 const projects: Project[] = [
+  {
+    id: 2,
+    title: "Bingo X",
+    description: "An exciting multiplayer bingo game with real-time gameplay, custom rooms, and interactive features. Built with modern web technologies for seamless cross-platform experience.",
+    technologies: ["React", "TypeScript", "Supabase", "Tailwind CSS", "Vite"],
+    category: "Game Development",
+    githubUrl: "https://github.com/antonysojan18/BingoX",
+    liveUrl: "https://bingox.vercel.app/lobby",
+    image: bingoxCover,
+  },
   {
     id: 1,
     title: "Portfolio Website",
