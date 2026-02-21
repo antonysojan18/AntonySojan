@@ -127,7 +127,7 @@ const ScrollStack = ({
                 {React.Children.map(children, (child, index) => {
                     if (React.isValidElement(child)) {
                         const isLast = index === React.Children.count(children) - 1;
-                        return React.cloneElement(child as React.ReactElement<any>, {
+                        return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
                             style: { marginBottom: isLast ? '0px' : '40vh' }
                         });
                     }
