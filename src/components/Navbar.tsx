@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-md shadow-soft" : "bg-transparent"
+        isScrolled ? "bg-transparent/95 backdrop-blur-md shadow-soft" : "bg-transparent"
       }`}
     >
       <nav className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
@@ -75,7 +75,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         <div
-          className={`md:hidden absolute top-20 left-0 right-0 bg-background/98 backdrop-blur-lg border-b border-border transition-all duration-300 ${
+          className={`md:hidden absolute top-20 left-0 right-0 bg-transparent/98 backdrop-blur-lg border-b border-border transition-all duration-300 ${
             isOpen ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
         >

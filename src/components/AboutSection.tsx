@@ -95,7 +95,7 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section id="about" className="section-padding bg-cream-dark">
+    <section id="about" className="section-padding bg-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -106,7 +106,7 @@ const AboutSection = () => {
             Creative <span className="text-gradient-gold">Developer</span> & Visual Artist
           </h2>
           <p className="font-body text-muted-foreground max-w-2xl mx-auto text-lg">
-            A fresher and freelancer with strong cross-domain expertise, bridging the gap between 
+            A fresher and freelancer with strong cross-domain expertise, bridging the gap between
             technology and creativity to deliver exceptional digital experiences.
           </p>
         </div>
@@ -139,7 +139,7 @@ const AboutSection = () => {
             <div ref={timelineRef} className="relative">
               {/* Timeline Line */}
               <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-primary/30 overflow-hidden">
-                <div 
+                <div
                   className="absolute top-0 left-0 w-full bg-primary timeline-progress"
                   style={{
                     height: `${lineProgress}%`,
@@ -147,7 +147,7 @@ const AboutSection = () => {
                   }}
                 />
               </div>
-              
+
               <div className="space-y-8">
                 {education.map((edu, index) => {
                   const isVisible = visibleItems.has(index);
@@ -156,24 +156,22 @@ const AboutSection = () => {
                     <div
                       key={index}
                       data-index={index}
-                      className={`timeline-item flex gap-6 items-start pl-6 relative transition-all duration-700 ${
-                        isVisible 
-                          ? 'opacity-100 translate-x-0' 
+                      className={`timeline-item flex gap-6 items-start pl-6 relative transition-all duration-700 ${isVisible
+                          ? 'opacity-100 translate-x-0'
                           : 'opacity-0 translate-x-[-20px]'
-                      }`}
+                        }`}
                       style={{ transitionDelay: `${index * 200}ms` }}
                     >
                       {/* Timeline Dot */}
-                      <div className={`absolute left-[3px] top-2 w-4 h-4 rounded-full z-10 transition-all duration-500 ${
-                        isLastItem 
-                          ? 'bg-background border-2 border-primary' 
+                      <div className={`absolute left-[3px] top-2 w-4 h-4 rounded-full z-10 transition-all duration-500 ${isLastItem
+                          ? 'bg-transparent border-2 border-primary'
                           : 'bg-primary border-2 border-primary'
-                      }`}>
+                        }`}>
                         {isVisible && isLastItem && (
                           <div className="absolute inset-0 bg-primary rounded-full animate-ping-slow opacity-75" />
                         )}
                       </div>
-                      
+
                       <span className="text-sm font-semibold text-primary min-w-[50px]">
                         {edu.year}
                       </span>
@@ -197,7 +195,7 @@ const AboutSection = () => {
                 {tools.map((tool) => (
                   <span
                     key={tool}
-                    className="px-4 py-2 bg-background rounded-full text-sm font-medium border border-border hover:border-primary hover:text-primary transition-colors"
+                    className="px-4 py-2 bg-transparent rounded-full text-sm font-medium border border-border hover:border-primary hover:text-primary transition-colors"
                   >
                     {tool}
                   </span>

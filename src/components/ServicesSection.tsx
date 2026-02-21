@@ -21,7 +21,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section id="services" className="section-padding bg-background">
+    <section id="services" className="section-padding bg-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -41,7 +41,7 @@ const ServicesSection = () => {
           {services.map((service) => (
             <div
               key={service.title}
-              className="group relative bg-card rounded-3xl p-8 md:p-10 border border-border hover:border-primary/50 transition-all duration-500 hover:shadow-card overflow-hidden"
+              className="group relative bg-transparent/20 backdrop-blur-md rounded-3xl p-8 md:p-10 border border-border hover:border-primary/50 transition-all duration-500 hover:shadow-card overflow-hidden"
             >
               {/* Background Number */}
               <span className="absolute -right-4 -top-4 font-display text-[150px] font-bold text-muted/30 select-none pointer-events-none transition-all duration-500 group-hover:text-primary/10">

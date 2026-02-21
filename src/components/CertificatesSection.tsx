@@ -141,7 +141,7 @@ const CertificateCard = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="group relative overflow-hidden rounded-lg bg-card border border-border/50 cursor-pointer transition-all duration-300 hover:border-gold/50 hover:shadow-elegant">
+        <div className="group relative overflow-hidden rounded-lg bg-transparent/20 backdrop-blur-md border border-border/50 cursor-pointer transition-all duration-300 hover:border-gold/50 hover:shadow-elegant">
           <div className="aspect-[4/3] overflow-hidden">
             <img
               src={certificate.image}
@@ -168,7 +168,7 @@ const CertificateCard = ({
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl p-2 bg-background/95 backdrop-blur-sm">
+      <DialogContent className="max-w-4xl p-2 bg-transparent/95 backdrop-blur-sm">
         <img
           src={certificate.image}
           alt={certificate.title}
@@ -181,7 +181,7 @@ const CertificateCard = ({
 
 const CertificatesSection = () => {
   return (
-    <section id="certificates" className="py-20 md:py-32 bg-secondary/30">
+    <section id="certificates" className="py-20 md:py-32 bg-transparent/30">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">

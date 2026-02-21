@@ -107,7 +107,12 @@
     @apply bg-background text-foreground font-body antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 }
@@ -119,13 +124,11 @@
   }
 
   .btn-gold {
-    @apply bg-primary text-primary-foreground font-medium px-8 py-4 rounded-full 
-           transition-all duration-300 hover:shadow-gold hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-primary text-primary-foreground font-medium px-8 py-4 rounded-full transition-all duration-300 hover:shadow-gold hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-outline-dark {
-    @apply border-2 border-foreground text-foreground font-medium px-8 py-4 rounded-full 
-           transition-all duration-300 hover:bg-foreground hover:text-background;
+    @apply border-2 border-foreground text-foreground font-medium px-8 py-4 rounded-full transition-all duration-300 hover:bg-foreground hover:text-background;
   }
 
   .card-premium {
@@ -158,11 +161,25 @@
 }
 
 @layer utilities {
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
-  .delay-500 { animation-delay: 500ms; }
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
 }
 
 @keyframes fadeUp {
@@ -170,6 +187,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -177,8 +195,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInLeft {
@@ -186,6 +209,7 @@
     opacity: 0;
     transform: translateX(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -197,6 +221,7 @@
     opacity: 0;
     transform: translateX(50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -208,6 +233,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -220,10 +246,13 @@
 }
 
 @keyframes ping-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.75;
   }
+
   50% {
     transform: scale(1.5);
     opacity: 0;

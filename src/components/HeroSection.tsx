@@ -7,9 +7,9 @@ const HeroSection = () => {
       id="home"
       className="relative min-h-screen flex items-center pt-20 section-padding overflow-hidden"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-cream via-background to-cream-dark pointer-events-none" />
-      
+      {/* Background gradient (made transparent to show Prism) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-transparent pointer-events-none" />
+
       <div className="relative max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* Left Content */}
@@ -53,7 +53,7 @@ const HeroSection = () => {
 
             {/* Sub-bio */}
             <p className="font-body text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-10 animate-fade-up delay-400">
-              A Bachelor of technology Student who turns software development, 
+              A Bachelor of technology Student who turns software development,
               product design, and visual storytelling into impactful experiences.
             </p>
 
@@ -63,8 +63,8 @@ const HeroSection = () => {
                 View Portfolio
                 <ArrowRight size={18} className="inline ml-2 transition-transform group-hover:translate-x-1" />
               </a>
-              <a 
-                href="/Antony_Sojan_CV.pdf" 
+              <a
+                href="/Antony_Sojan_CV.pdf"
                 download="Antony_Sojan_Resume.pdf"
                 className="btn-outline-dark"
               >
@@ -78,7 +78,7 @@ const HeroSection = () => {
             <div className="relative">
               {/* Decorative circle */}
               <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-gold-light/30 rounded-full blur-3xl" />
-              
+
               {/* Image container */}
               <div className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[450px] lg:h-[500px] rounded-3xl overflow-hidden shadow-card">
                 <img
@@ -91,12 +91,12 @@ const HeroSection = () => {
 
             {/* Stats badges below image */}
             <div className="flex gap-4 mt-6">
-              <div className="bg-background rounded-xl shadow-card p-4 animate-float">
+              <div className="bg-transparent rounded-xl shadow-card p-4 animate-float">
                 <p className="font-display text-3xl font-bold text-primary">5+</p>
                 <p className="text-xs text-muted-foreground">Skills Mastered</p>
               </div>
 
-              <div className="bg-background rounded-xl shadow-card p-4 animate-float" style={{ animationDelay: "1s" }}>
+              <div className="bg-transparent rounded-xl shadow-card p-4 animate-float" style={{ animationDelay: "1s" }}>
                 <p className="font-display text-3xl font-bold text-primary">20+</p>
                 <p className="text-xs text-muted-foreground">Projects Completed</p>
               </div>

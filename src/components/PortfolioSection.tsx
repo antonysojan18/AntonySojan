@@ -94,7 +94,7 @@ const PortfolioSection = () => {
   const closeItem = () => setActiveItem(null);
 
   return (
-    <section id="portfolio" className="section-padding bg-cream-dark">
+    <section id="portfolio" className="section-padding bg-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -163,7 +163,7 @@ const PortfolioSection = () => {
               </div>
 
               {/* Hover Icon */}
-              <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-cream flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
+              <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-transparent flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
                 <ExternalLink className="w-4 h-4 text-charcoal" />
               </div>
             </button>
@@ -178,7 +178,7 @@ const PortfolioSection = () => {
             role="presentation"
           >
             <div
-              className="bg-background rounded-2xl overflow-hidden shadow-2xl max-w-4xl w-full"
+              className="bg-transparent rounded-2xl overflow-hidden shadow-2xl max-w-4xl w-full"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative">
