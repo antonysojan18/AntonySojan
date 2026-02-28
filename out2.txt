@@ -1,0 +1,62 @@
+[
+  {
+    "url": "https://cdn.simpleicons.org/html5/E34F26",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/css3/1572B6",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/javascript/F7DF1E",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/python/3776AB",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/adobe-premiere-pro--v1.png",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/adobe-after-effects--v1.png",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/capcut.png",
+    "status": 404
+  },
+  {
+    "url": "https://img.icons8.com/color/256/davinci-resolve.png",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/adobe-lightroom--v1.png",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/adobe-photoshop--v1.png",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/figma/F24E1E",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/power-bi.png",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/react/61DAFB",
+    "status": 200
+  },
+  {
+    "url": "https://img.icons8.com/color/256/visual-studio-code-2019.png",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/cursor/808080",
+    "status": 200
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://cdn.simpleicons.org/css3/1572B6",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/css/1572B6",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/capcut/000000",
+    "status": 404
+  },
+  {
+    "url": "https://img.icons8.com/color/256/capcut.png",
+    "status": 404
+  }
+]

@@ -110,8 +110,9 @@ const PortfolioSection = () => {
         </div>
 
         {/* Featured Photo - My Work */}
-        <div className="mb-10">
-          <div className="relative group overflow-hidden rounded-xl max-w-xs mx-auto">
+        <div className="mb-10 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary/10 blur-[80px] rounded-full pointer-events-none -z-10" />
+          <div className="relative group overflow-hidden rounded-2xl max-w-sm mx-auto ring-1 ring-white/10 hover:ring-primary/50 shadow-soft transition-all duration-500">
             <div className="aspect-square">
               <img
                 src={portfolioMain}
@@ -132,16 +133,16 @@ const PortfolioSection = () => {
         </div>
 
         {/* Portfolio Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-16">
           {portfolioItems.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => openItem(item)}
-              className={`group relative overflow-hidden rounded-xl cursor-pointer ${item.span}`}
+              className={`group relative overflow-hidden rounded-2xl cursor-pointer ring-1 ring-white/5 hover:ring-primary/40 hover:shadow-[0_0_30px_rgba(255,215,0,0.15)] transition-all duration-500 ${item.span}`}
             >
               {/* Image */}
-              <div className="aspect-[4/3] md:aspect-auto md:h-full min-h-[180px]">
+              <div className="aspect-[4/3] md:aspect-auto md:h-full min-h-[220px]">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -150,21 +151,21 @@ const PortfolioSection = () => {
               </div>
 
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 text-left">
                 <span className="text-primary text-xs font-medium uppercase tracking-wider">
                   {item.category}
                 </span>
-                <h3 className="font-display text-base md:text-lg font-bold text-cream mt-1">
+                <h3 className="font-display text-base md:text-lg font-bold text-foreground group-hover:text-gradient-gold mt-1 transition-colors">
                   {item.title}
                 </h3>
               </div>
 
               {/* Hover Icon */}
-              <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-transparent flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
-                <ExternalLink className="w-4 h-4 text-charcoal" />
+              <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 border border-primary/30">
+                <ExternalLink className="w-5 h-5 text-primary" />
               </div>
             </button>
           ))}

@@ -1,0 +1,62 @@
+[
+  {
+    "url": "https://cdn.simpleicons.org/html5",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/css3",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/javascript",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/python",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/adobepremierepro",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/adobeaftereffects",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/capcut",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/davinciresolve",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/adobelightroom",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/adobephotoshop",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/figma",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/powerbi",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/react",
+    "status": 200
+  },
+  {
+    "url": "https://cdn.simpleicons.org/visualstudiocode",
+    "status": 404
+  },
+  {
+    "url": "https://cdn.simpleicons.org/cursor",
+    "status": 200
+  }
+]

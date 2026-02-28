@@ -75,30 +75,35 @@ const HeroSection = () => {
 
           {/* Right Content - Profile Image */}
           <div className="order-1 lg:order-2 flex flex-col items-center lg:items-end animate-scale-in">
-            <div className="relative">
-              {/* Decorative circle */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-gold-light/30 rounded-full blur-3xl" />
+            <div className="relative group">
+              {/* Decorative circle glow */}
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-gold-light/40 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
+
+              {/* Additional backdrop rings */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full border border-primary/20 animate-[spin_10s_linear_infinite]" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] rounded-full border border-primary/10 animate-[spin_15s_linear_infinite_reverse]" />
 
               {/* Image container */}
-              <div className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[450px] lg:h-[500px] rounded-3xl overflow-hidden shadow-card">
+              <div className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[450px] lg:h-[500px] rounded-[2rem] overflow-hidden shadow-[0_0_40px_rgba(255,215,0,0.15)] ring-1 ring-white/10 group-hover:ring-primary/50 transition-all duration-500">
+                <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent z-10" />
                 <img
                   src={antonyProfile}
                   alt="Antony Sojan - Software Developer and Creative Professional"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
                 />
               </div>
             </div>
 
             {/* Stats badges below image */}
-            <div className="flex gap-4 mt-6">
-              <div className="bg-transparent rounded-xl shadow-card p-4 animate-float">
-                <p className="font-display text-3xl font-bold text-primary">5+</p>
-                <p className="text-xs text-muted-foreground">Skills Mastered</p>
+            <div className="flex gap-4 mt-8 relative z-20">
+              <div className="glass-panel rounded-2xl p-5 animate-float hover:border-primary/50 transition-colors">
+                <p className="font-display text-4xl font-bold text-gradient-gold">5+</p>
+                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase mt-1">Skills Mastered</p>
               </div>
 
-              <div className="bg-transparent rounded-xl shadow-card p-4 animate-float" style={{ animationDelay: "1s" }}>
-                <p className="font-display text-3xl font-bold text-primary">20+</p>
-                <p className="text-xs text-muted-foreground">Projects Completed</p>
+              <div className="glass-panel rounded-2xl p-5 animate-float hover:border-primary/50 transition-colors" style={{ animationDelay: "1s" }}>
+                <p className="font-display text-4xl font-bold text-gradient-gold">20+</p>
+                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase mt-1">Projects Built</p>
               </div>
             </div>
           </div>
