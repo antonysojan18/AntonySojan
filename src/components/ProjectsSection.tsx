@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ScrollStack, { ScrollStackItem } from "@/components/ui/ScrollStack";
 
 // Existing Cover Assets
-import portfolioCover from "@/assets/portfolio-cover.jpg";
+import portfolioCover from "@/assets/ASportfolio-cover.png";
 import bingoxCover from "@/assets/bingox-cover.jpg";
 import lungvisionCover from "@/assets/lungvision-cover.png";
 import instagramAiCover from "@/assets/instagram_ai_analyzer-cover.png";
