@@ -46,30 +46,31 @@ const Index = () => {
       <ScrollProgressBar />
       <Navbar />
 
-      {/* Interactive Cursor Grid (50% Opacity Deep Editorial Blue in All Sections Except Hero) */}
-      <div className="fixed inset-0 pointer-events-none z-[32] overflow-hidden" aria-hidden="true">
-        <CursorGrid
-          cellSize={70}
-          color="#226192"
-          radius={140}
-          falloff="smooth"
-          holdTime={400}
-          fadeDuration={800}
-          lineWidth={1.2}
-          maxOpacity={0.5}
-          fillOpacity={0}
-          gridOpacity={0}
-          cellRadius={0}
-          clickPulse={true}
-          pulseSpeed={600}
-        />
-      </div>
-
       <main>
         <HeroSection />
         {/* Architectural Canvas Docking Layer for Lower Sections */}
         <div id="lower-sections" className="relative z-30 -mt-6 sm:-mt-10 rounded-t-[32px] sm:rounded-t-[48px] bg-[#EAE6DE] shadow-[0_-20px_45px_rgba(34,97,146,0.06)] border-t border-white/60">
           <ArchitecturalBackground />
+
+          {/* Interactive Cursor Grid (20% Opacity Deep Editorial Blue BEHIND all cards, text and tabs) */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+            <CursorGrid
+              cellSize={70}
+              color="#226192"
+              radius={140}
+              falloff="smooth"
+              holdTime={600}
+              fadeDuration={800}
+              lineWidth={1.2}
+              maxOpacity={0.2}
+              fillOpacity={0}
+              gridOpacity={0}
+              cellRadius={0}
+              clickPulse={true}
+              pulseSpeed={600}
+            />
+          </div>
+
           <div className="relative z-10">
             <AboutSection />
             <ProjectsSection />
