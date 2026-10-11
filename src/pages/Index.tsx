@@ -10,6 +10,8 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BlobCursor from "@/components/BlobCursor";
 
+import CursorGrid from "@/components/CursorGrid";
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-transparent">
@@ -43,10 +45,30 @@ const Index = () => {
 
       <ScrollProgressBar />
       <Navbar />
+
+      {/* Interactive Cursor Grid (50% Opacity Deep Editorial Blue in All Sections Except Hero) */}
+      <div className="fixed inset-0 pointer-events-none z-[32] overflow-hidden" aria-hidden="true">
+        <CursorGrid
+          cellSize={70}
+          color="#226192"
+          radius={140}
+          falloff="smooth"
+          holdTime={400}
+          fadeDuration={800}
+          lineWidth={1.2}
+          maxOpacity={0.5}
+          fillOpacity={0}
+          gridOpacity={0}
+          cellRadius={0}
+          clickPulse={true}
+          pulseSpeed={600}
+        />
+      </div>
+
       <main>
         <HeroSection />
         {/* Architectural Canvas Docking Layer for Lower Sections */}
-        <div className="relative z-30 -mt-6 sm:-mt-10 rounded-t-[32px] sm:rounded-t-[48px] bg-[#EAE6DE] shadow-[0_-20px_45px_rgba(34,97,146,0.06)] border-t border-white/60">
+        <div id="lower-sections" className="relative z-30 -mt-6 sm:-mt-10 rounded-t-[32px] sm:rounded-t-[48px] bg-[#EAE6DE] shadow-[0_-20px_45px_rgba(34,97,146,0.06)] border-t border-white/60">
           <ArchitecturalBackground />
           <div className="relative z-10">
             <AboutSection />
