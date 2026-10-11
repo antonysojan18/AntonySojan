@@ -1,66 +1,35 @@
 .scroll-stack-card-wrapper {
     position: sticky;
-    top: 15vh;
-    /* Basic stick point */
+    top: 12vh;
     z-index: 10;
     transform-origin: top center;
     transition: opacity 0.2s ease-out;
-    /* Only opacity and scale/blur change */
 }
 
-/* Ensure next card stays on top when scrolling */
-.scroll-stack-card-wrapper:nth-child(1) {
-    z-index: 10;
-    top: 15vh;
-}
-
-.scroll-stack-card-wrapper:nth-child(2) {
-    z-index: 11;
-    top: calc(15vh + 30px);
-}
-
-.scroll-stack-card-wrapper:nth-child(3) {
-    z-index: 12;
-    top: calc(15vh + 60px);
-}
-
-.scroll-stack-card-wrapper:nth-child(4) {
-    z-index: 13;
-    top: calc(15vh + 90px);
-}
-
-.scroll-stack-card-wrapper:nth-child(5) {
-    z-index: 14;
-    top: calc(15vh + 120px);
-}
-
-.scroll-stack-card-wrapper:nth-child(6) {
-    z-index: 15;
-    top: calc(15vh + 150px);
-}
-
-.scroll-stack-card-wrapper:nth-child(7) {
-    z-index: 16;
-    top: calc(15vh + 180px);
-}
-
-.scroll-stack-card-wrapper:nth-child(8) {
-    z-index: 17;
-    top: calc(15vh + 210px);
-}
-
-.scroll-stack-card-wrapper:nth-child(9) {
-    z-index: 18;
-    top: calc(15vh + 240px);
-}
-
-.scroll-stack-card-wrapper:nth-child(10) {
-    z-index: 19;
-    top: calc(15vh + 270px);
-}
+/* Ensure progressive z-index and top stack for all cards up to 20+ */
+.scroll-stack-card-wrapper:nth-child(1)  { z-index: 10; top: calc(12vh + 0px); }
+.scroll-stack-card-wrapper:nth-child(2)  { z-index: 11; top: calc(12vh + 20px); }
+.scroll-stack-card-wrapper:nth-child(3)  { z-index: 12; top: calc(12vh + 40px); }
+.scroll-stack-card-wrapper:nth-child(4)  { z-index: 13; top: calc(12vh + 60px); }
+.scroll-stack-card-wrapper:nth-child(5)  { z-index: 14; top: calc(12vh + 80px); }
+.scroll-stack-card-wrapper:nth-child(6)  { z-index: 15; top: calc(12vh + 100px); }
+.scroll-stack-card-wrapper:nth-child(7)  { z-index: 16; top: calc(12vh + 120px); }
+.scroll-stack-card-wrapper:nth-child(8)  { z-index: 17; top: calc(12vh + 140px); }
+.scroll-stack-card-wrapper:nth-child(9)  { z-index: 18; top: calc(12vh + 160px); }
+.scroll-stack-card-wrapper:nth-child(10) { z-index: 19; top: calc(12vh + 170px); }
+.scroll-stack-card-wrapper:nth-child(11) { z-index: 20; top: calc(12vh + 180px); }
+.scroll-stack-card-wrapper:nth-child(12) { z-index: 21; top: calc(12vh + 190px); }
+.scroll-stack-card-wrapper:nth-child(13) { z-index: 22; top: calc(12vh + 200px); }
+.scroll-stack-card-wrapper:nth-child(14) { z-index: 23; top: calc(12vh + 210px); }
+.scroll-stack-card-wrapper:nth-child(15) { z-index: 24; top: calc(12vh + 220px); }
+.scroll-stack-card-wrapper:nth-child(16) { z-index: 25; top: calc(12vh + 230px); }
+.scroll-stack-card-wrapper:nth-child(17) { z-index: 26; top: calc(12vh + 240px); }
+.scroll-stack-card-wrapper:nth-child(18) { z-index: 27; top: calc(12vh + 250px); }
+.scroll-stack-card-wrapper:nth-child(19) { z-index: 28; top: calc(12vh + 260px); }
+.scroll-stack-card-wrapper:nth-child(20) { z-index: 29; top: calc(12vh + 270px); }
 
 /* The group component inside is scaled and faded */
-.scroll-stack-card-wrapper>div {
+.scroll-stack-card-wrapper > div {
     transform-origin: top center;
     will-change: transform, opacity;
     transition: transform 0.1s ease-out, opacity 0.1s ease-out;

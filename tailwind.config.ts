@@ -15,8 +15,13 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
-        body: ['Outfit', 'sans-serif'],
+        display: ['Syne', 'Playfair Display', 'sans-serif'],
+        syne: ['Syne', 'sans-serif'],
+        space: ['Space Grotesk', 'sans-serif'],
+        cinzel: ['Cinzel', 'serif'],
+        playfair: ['Playfair Display', 'serif'],
+        body: ['Plus Jakarta Sans', 'Outfit', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Outfit', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,6 +66,26 @@ export default {
           DEFAULT: "hsl(var(--cream))",
           dark: "hsl(var(--cream-dark))",
         },
+        editorial: {
+          DEFAULT: "#226192",
+          light: "#2E7BB7",
+          dark: "#194A70",
+        },
+        cobalt: {
+          DEFAULT: "#2C3480",
+          light: "#3C47A7",
+          dark: "#1C2257",
+        },
+        coral: {
+          DEFAULT: "#EF8557",
+          light: "#F4A27B",
+          dark: "#D86B3B",
+        },
+        ivory: {
+          DEFAULT: "#EAE6DE",
+          light: "#F6F3EC",
+          dark: "#DCD6CB",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -71,6 +96,8 @@ export default {
         soft: "var(--shadow-soft)",
         card: "var(--shadow-card)",
         gold: "var(--shadow-gold)",
+        editorial: "0 8px 30px -6px rgba(34, 97, 146, 0.3)",
+        coral: "0 8px 25px -4px rgba(239, 133, 87, 0.4)",
       },
       keyframes: {
         "accordion-down": {

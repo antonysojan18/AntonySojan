@@ -1,5 +1,6 @@
 import { Award, GraduationCap, Briefcase } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import TiltCard from "./TiltCard";
 
 // NPTEL Certificates
 import cert1 from "@/assets/cert1.jpg";
@@ -141,34 +142,38 @@ const CertificateCard = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="group relative overflow-hidden rounded-lg bg-transparent/20 backdrop-blur-md border border-border/50 cursor-pointer transition-all duration-300 hover:border-gold/50 hover:shadow-elegant">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img
-              src={certificate.image}
-              alt={certificate.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="p-4">
-            <h4 className="font-display text-sm font-semibold text-foreground line-clamp-2 mb-2">
-              {certificate.title}
-            </h4>
-            {type === "nptel" && "score" in certificate && (
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{certificate.institution}</span>
-                <span className="text-gold font-semibold">{certificate.score}</span>
+        <div className="h-full">
+          <TiltCard maxTilt={6} className="h-full">
+            <div className="group relative overflow-hidden rounded-xl sm:rounded-2xl bg-[#226192] text-[#EAE6DE] border border-white/20 cursor-pointer transition-all duration-300 hover:border-white/40 hover:shadow-[0_16px_36px_rgba(24,74,113,0.35)] flex flex-col h-full">
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={certificate.image}
+                  alt={certificate.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
-            )}
-            {type === "internship" && "organization" in certificate && (
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{certificate.organization}</span>
-                <span>{certificate.duration}</span>
+              <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between">
+                <h4 className="font-display text-xs sm:text-sm font-bold text-[#FAF8F5] line-clamp-2 mb-1.5 sm:mb-2 leading-tight sm:leading-snug">
+                  {certificate.title}
+                </h4>
+                {type === "nptel" && "score" in certificate && (
+                  <div className="flex items-center justify-between text-[10px] sm:text-xs text-[#EAE6DE]/85 gap-1 mt-auto pt-1">
+                    <span className="truncate">{certificate.institution}</span>
+                    <span className="text-[#FAF8F5] bg-white/20 px-1.5 sm:px-2.5 py-0.5 rounded-full font-bold shrink-0">{certificate.score}</span>
+                  </div>
+                )}
+                {type === "internship" && "organization" in certificate && (
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between text-[10px] sm:text-xs text-[#EAE6DE]/85 gap-0.5 sm:gap-1 mt-auto pt-1">
+                    <span className="truncate font-medium">{certificate.organization}</span>
+                    <span className="shrink-0 text-[#FAF8F5]/80 text-[9.5px] sm:text-xs">{certificate.duration}</span>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          </TiltCard>
         </div>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl p-2 bg-transparent/95 backdrop-blur-sm">
+      <DialogContent className="max-w-4xl p-2 bg-background/95 backdrop-blur-md border border-[#226192]/20">
         <img
           src={certificate.image}
           alt={certificate.title}
@@ -181,31 +186,31 @@ const CertificateCard = ({
 
 const CertificatesSection = () => {
   return (
-    <section id="certificates" className="py-20 md:py-32 bg-transparent/30">
-      <div className="container mx-auto px-6">
+    <section id="certificates" className="section-padding bg-transparent">
+      <div className="max-w-7xl mx-auto px-0 sm:px-4">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 border border-gold/20 mb-6">
-            <Award className="w-4 h-4 text-gold" />
-            <span className="text-sm font-medium text-gold">Achievements</span>
+        <div className="text-center mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#226192]/10 border border-[#226192]/25 mb-3 sm:mb-4">
+            <Award className="w-4 h-4 text-[#226192]" />
+            <span className="text-xs sm:text-sm font-semibold text-[#226192]">Achievements</span>
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#226192] mb-2 sm:mb-3">
             CERTIFICATES
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base px-2">
             A showcase of my academic achievements, professional certifications, and workshop completions.
           </p>
         </div>
 
         {/* NPTEL Achievements */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
-            <GraduationCap className="w-6 h-6 text-gold" />
-            <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+        <div className="mb-10">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-8">
+            <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-[#226192]" />
+            <h3 className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-[#226192]">
               NPTEL ACHIEVEMENTS
             </h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {nptelCertificates.map((cert) => (
               <CertificateCard key={cert.id} certificate={cert} type="nptel" />
             ))}
@@ -214,13 +219,13 @@ const CertificatesSection = () => {
 
         {/* Internships & Workshops */}
         <div>
-          <div className="flex items-center gap-3 mb-8">
-            <Briefcase className="w-6 h-6 text-gold" />
-            <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-8">
+            <Briefcase className="w-5 h-5 sm:w-6 sm:h-6 text-[#226192]" />
+            <h3 className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-[#226192]">
               INTERNSHIPS & WORKSHOPS
             </h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
             {internshipCertificates.map((cert) => (
               <CertificateCard key={cert.id} certificate={cert} type="internship" />
             ))}

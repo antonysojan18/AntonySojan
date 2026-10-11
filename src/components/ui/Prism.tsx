@@ -204,11 +204,15 @@ const Prism = ({
           col = clamp(hueRotation(uHueShift) * col, 0.0, 1.0);
         }
 
-        // Apply dark gold tint logic here
-        vec3 darkGold = vec3(0.65, 0.45, 0.15); // Adjust for specific gold tint
-        col = mix(col, col * darkGold, 0.8); // Blend with gold tint
+        // Apply Deep Editorial Blue tint logic here
+        vec3 editorialBlue = vec3(0.133, 0.380, 0.573); // #226192
+        col = mix(col, col * editorialBlue, 0.65); // Blend with editorial blue tint
 
-        gl_FragColor = vec4(col, o.a);
+        // On warm ivory background, ensure empty background space is transparent
+        float lum = dot(o.rgb, vec3(0.299, 0.587, 0.114));
+        float alpha = smoothstep(0.12, 0.75, lum) * 0.5;
+
+        gl_FragColor = vec4(col, alpha);
       }
     `;
 

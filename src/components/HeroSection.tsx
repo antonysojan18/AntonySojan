@@ -1,115 +1,347 @@
-import { ArrowRight, Circle } from "lucide-react";
-import antonyProfile from "@/assets/antony-profile.jpg";
+import { useState, useEffect, useRef } from "react";
+import { Download, Github } from "lucide-react";
+import antonyProfile from "@/assets/antony-profile.PNG";
+import TechText from "./TechText";
+import HeroBackground from "./HeroBackground";
+
+const greetings = [
+  "Hello",
+  "ഹലോ",
+  "வணக்கம்",
+  "नमस्ते",
+  "Hola",
+  "Bonjour",
+  "Ciao",
+  "Hallo",
+  "こんにちは",
+  "Olá",
+];
 
 const HeroSection = () => {
+  const [greetingIndex, setGreetingIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setGreetingIndex((prev) => (prev + 1) % greetings.length);
+    }, 2400);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Smooth scroll listener for transition to second section
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY || window.pageYOffset;
+          // Progress from 0 to 1 over first 420px of scroll
+          const maxScroll = Math.max(window.innerHeight * 0.55, 360);
+          const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: x * 12, y: -y * 12 });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
+
+  // Viewfinder HUD opacity curve: fades in quickly, peaks mid-transition, then dissolves as About docks in
+  const hudOpacity =
+    scrollProgress < 0.02
+      ? 0
+      : scrollProgress < 0.25
+        ? (scrollProgress - 0.02) / 0.23
+        : scrollProgress > 0.85
+          ? Math.max(0, 1 - (scrollProgress - 0.85) / 0.15)
+          : 1;
+
+  // Viewfinder expansion factor as camera zooms in
+  const viewfinderExpansion = scrollProgress * 32; // expands outwards by up to 32px
+  const apertureRotation = scrollProgress * 95; // rotates 95 degrees
+
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 640 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const curtainDistance = isSmallScreen ? 55 : 150;
+
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center pt-20 section-padding overflow-hidden"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative min-h-[88vh] sm:min-h-[92vh] flex flex-col justify-center items-center pt-20 sm:pt-24 pb-10 sm:pb-16 px-2 sm:px-6 md:px-8 overflow-hidden transition-colors"
     >
-      {/* Background gradient (made transparent to show Prism) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-transparent pointer-events-none" />
+      {/* Blended 4-in-1 Cinematic & Interactive Hero Background */}
+      <HeroBackground tilt={tilt} />
 
-      <div className="relative max-w-7xl mx-auto w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Left Content */}
-          <div className="order-2 lg:order-1 text-center lg:text-left">
-            {/* Availability Badge */}
-            <div className="inline-flex items-center gap-2 mb-8 animate-fade-up">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                Available for new opportunities
-              </span>
-            </div>
-
-            {/* Greeting */}
-            <p className="font-display text-2xl md:text-3xl italic text-muted-foreground mb-4 animate-fade-up delay-100">
-              Hey, there
-            </p>
-
-            {/* Name */}
-            <h1 className="font-display font-bold tracking-tight mb-6 animate-fade-up delay-200">
-              <span className="text-3xl md:text-4xl lg:text-5xl">I AM</span><br />
-              <span className="text-gradient-gold text-4xl md:text-6xl lg:text-7xl">ANTONY SOJAN</span>
-            </h1>
-
-            {/* Title */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6 animate-fade-up delay-300">
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
-                Software Developer
-              </span>
-              <Circle size={8} className="fill-primary text-primary transition-colors duration-300" />
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
-                Cinematographer
-              </span>
-              <Circle size={8} className="fill-primary text-primary transition-colors duration-300" />
-              <span className="font-body text-lg md:text-xl font-semibold tracking-wide uppercase text-foreground transition-colors duration-300">
-                Designer
-              </span>
-            </div>
-
-            {/* Sub-bio */}
-            <p className="font-body text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-10 animate-fade-up delay-400">
-              A Bachelor of technology Student who turns software development,
-              product design, and visual storytelling into impactful experiences.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 animate-fade-up delay-500">
-              <a href="#portfolio" className="btn-gold group">
-                View Portfolio
-                <ArrowRight size={18} className="inline ml-2 transition-transform group-hover:translate-x-1" />
-              </a>
-              <a
-                href="/Antony_Sojan_CV.pdf"
-                download="Antony_Sojan_Resume.pdf"
-                className="btn-outline-dark"
+      <div className="relative max-w-7xl mx-auto w-full flex flex-col items-center">
+        {/* Top of the photo: "Hello, Its" with rolling Hello in different languages */}
+        <div
+          className="flex items-center justify-center translate-y-1 sm:translate-y-3 md:translate-y-4 z-30 transition-transform duration-75 will-change-transform"
+          style={{
+            transform: `translateY(${10 - scrollProgress * 24}px)`,
+            opacity: Math.max(0, 1 - scrollProgress * 1.5),
+            filter: `blur(${scrollProgress * 6}px)`,
+          }}
+        >
+          <div className="perspective-600 h-8 sm:h-10 md:h-12 flex items-center justify-center">
+            <h2 className="text-lg xs:text-xl sm:text-3xl md:text-4xl font-black font-display tracking-tighter text-[#226192] flex items-baseline">
+              <span
+                key={greetingIndex}
+                className="animate-roll-3d inline-block"
               >
-                Resume
-              </a>
+                {greetings[greetingIndex]}
+              </span>
+              <span>, Its</span>
+            </h2>
+          </div>
+        </div>
+
+        {/* Central 3D Showcase: ANTONY | Bigger Pop-out Photo & Viewfinder | SOJAN */}
+        <div className="relative w-full max-w-7xl mx-auto flex items-center justify-center my-0 px-0.5 sm:px-4">
+          {/* ANTONY (Left Curtain) - Glides left and dissolves with blur on scroll */}
+          <div
+            className="flex-1 text-right select-none pr-0 sm:pr-1 md:pr-2 z-10 transition-transform duration-75 will-change-transform h-20 xs:h-24 sm:h-32 md:h-40 lg:h-52 xl:h-60 2xl:h-64 flex items-center justify-end"
+            style={{
+              transform: `translateX(-${scrollProgress * curtainDistance}px)`,
+              opacity: Math.max(0, 1 - scrollProgress * 1.35),
+              filter: `blur(${scrollProgress * 8}px)`,
+            }}
+          >
+            <h1 className="sr-only">ANTONY</h1>
+            <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)]">
+              <TechText
+                text="ANTONY"
+                fontFamily="'Playfair Display', serif"
+                fontWeight={900}
+                fontSize={220}
+                reveal="letter"
+                dashLength={4}
+                dashGap={2}
+                specks={15}
+                color="#226192"
+                accentColor="#EF8557"
+                letterSpacing={-0.03}
+                reach={180}
+                softness={0.7}
+                strokeWidth={1.8}
+                speed={1}
+                lineStyle="dashed"
+                selection
+                labels
+                draggable
+                sweep={false}
+                align="right"
+              />
             </div>
           </div>
 
-          {/* Right Content - Profile Image */}
-          <div className="order-1 lg:order-2 flex flex-col items-center lg:items-end animate-scale-in">
-            <div className="relative group">
-              {/* Decorative circle glow */}
-              <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-gold-light/40 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity duration-700" />
+          {/* Central Cutout Photo - Depth Zoom & Cinematography Viewfinder Frame */}
+          <div
+            className="relative shrink-0 -mx-7 xs:-mx-10 sm:-mx-10 md:-mx-14 lg:-mx-18 flex justify-center items-end group z-20 will-change-transform"
+            style={{
+              transform: `perspective(1000px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg) scale(${1 + scrollProgress * 0.16}) translateY(-${scrollProgress * 20}px)`,
+              transition: "transform 0.2s cubic-bezier(0.2, 0, 0.2, 1)",
+            }}
+          >
+            {/* Ambient 3D Rings & Backing Aura */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 xs:w-56 sm:w-64 md:w-72 lg:w-80 h-48 xs:h-56 sm:h-64 md:h-72 lg:h-80 rounded-full bg-gradient-to-tr from-[#226192]/25 via-[#2C3480]/15 to-[#EF8557]/20 blur-xl sm:blur-2xl pointer-events-none -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] rounded-full border border-white/60 pointer-events-none -z-10 animate-[spin_25s_linear_infinite]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[125%] h-[125%] rounded-full border border-[#226192]/15 pointer-events-none -z-10 animate-[spin_35s_linear_infinite_reverse]" />
 
-              {/* Additional backdrop rings */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full border border-primary/20 animate-[spin_10s_linear_infinite]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] rounded-full border border-primary/10 animate-[spin_15s_linear_infinite_reverse]" />
+            {/* OPTION 2 CINEMATOGRAPHY VIEWFINDER & APERTURE HUD */}
+            <div
+              className="absolute pointer-events-none z-30 transition-opacity duration-150 flex flex-col justify-between"
+              style={{
+                top: `-${viewfinderExpansion + 6}px`,
+                bottom: `-${viewfinderExpansion + 6}px`,
+                left: `-${viewfinderExpansion + 6}px`,
+                right: `-${viewfinderExpansion + 6}px`,
+                opacity: hudOpacity,
+              }}
+            >
+              {/* 4 Camera Framing Corner Brackets */}
+              <div className="absolute top-0 left-0 w-3.5 sm:w-6 h-3.5 sm:h-6 border-t-2 border-l-2 border-[#226192] rounded-tl-sm shadow-sm" />
+              <div className="absolute top-0 right-0 w-3.5 sm:w-6 h-3.5 sm:h-6 border-t-2 border-r-2 border-[#226192] rounded-tr-sm shadow-sm" />
+              <div className="absolute bottom-0 left-0 w-3.5 sm:w-6 h-3.5 sm:h-6 border-b-2 border-l-2 border-[#226192] rounded-bl-sm shadow-sm" />
+              <div className="absolute bottom-0 right-0 w-3.5 sm:w-6 h-3.5 sm:h-6 border-b-2 border-r-2 border-[#226192] rounded-br-sm shadow-sm" />
 
-              {/* Image container */}
-              <div className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[450px] lg:h-[500px] rounded-[2rem] overflow-hidden shadow-[0_0_40px_rgba(255,215,0,0.15)] ring-1 ring-white/10 group-hover:ring-primary/50 transition-all duration-500">
-                <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent z-10" />
-                <img
-                  src={antonyProfile}
-                  alt="Antony Sojan - Software Developer and Creative Professional"
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
-                />
+              {/* Viewfinder Top Telemetry */}
+              <div className="w-full flex items-center justify-between px-1.5 sm:px-3 py-0.5 sm:py-1 text-[7.5px] xs:text-[8px] sm:text-[10px] md:text-xs font-mono font-bold tracking-wider sm:tracking-widest text-[#226192]">
+                <div className="flex items-center gap-1 bg-[#226192]/10 backdrop-blur-md px-1.5 py-0.5 rounded border border-[#226192]/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#EF8557] animate-pulse" />
+                  <span>REC [●]</span>
+                </div>
+                <div className="bg-[#226192]/10 backdrop-blur-md px-1.5 py-0.5 rounded border border-[#226192]/20">
+                  <span>RAW 4K</span>
+                </div>
+              </div>
+
+              {/* Viewfinder Center Focal Crosshair & Rotating Lens Aperture Ring */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+                <svg
+                  className="w-36 h-36 xs:w-44 xs:h-44 sm:w-48 sm:h-48 md:w-60 md:h-60 text-[#226192]/30 animate-none transition-transform duration-75"
+                  viewBox="0 0 100 100"
+                  style={{
+                    transform: `rotate(${apertureRotation}deg) scale(${1 + scrollProgress * 0.25})`,
+                  }}
+                >
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="46"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                    strokeDasharray="4 3"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    fill="none"
+                    stroke="#EF8557"
+                    strokeWidth="0.8"
+                    strokeOpacity="0.45"
+                    strokeDasharray="8 6"
+                  />
+                </svg>
+
+                <div className="absolute flex items-center justify-center">
+                  <div className="w-3.5 sm:w-6 h-0.5 bg-[#EF8557]/80" />
+                  <div className="h-3.5 sm:h-6 w-0.5 bg-[#EF8557]/80 absolute" />
+                  <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full border border-[#226192] absolute" />
+                </div>
+              </div>
+
+              {/* Viewfinder Bottom Telemetry */}
+              <div className="w-full flex items-center justify-between px-1.5 sm:px-3 py-0.5 sm:py-1 text-[7.5px] xs:text-[8px] sm:text-[10px] md:text-xs font-mono font-bold tracking-wider sm:tracking-widest text-[#226192]">
+                <div className="bg-[#226192]/10 backdrop-blur-md px-1.5 py-0.5 rounded border border-[#226192]/20">
+                  <span>50mm f/1.2</span>
+                </div>
+                <div className="bg-[#226192]/10 backdrop-blur-md px-1.5 py-0.5 rounded border border-[#226192]/20 text-[#EF8557]">
+                  <span>ISO 100</span>
+                </div>
               </div>
             </div>
 
-            {/* Stats badges below image */}
-            <div className="flex gap-4 mt-8 relative z-20">
-              <div className="glass-panel rounded-2xl p-5 animate-float hover:border-primary/50 transition-colors">
-                <p className="font-display text-4xl font-bold text-gradient-gold">5+</p>
-                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase mt-1">Skills Mastered</p>
-              </div>
+            {/* Antony Profile Photo Cutout - Enlarged on mobile, original size on desktop */}
+            <div className="relative w-[195px] xs:w-[225px] sm:w-68 md:w-80 lg:w-[370px] xl:w-[430px] aspect-[4/5] max-h-[400px] sm:max-h-[460px] flex items-end justify-center">
+              <img
+                src={antonyProfile}
+                alt="Antony Sojan"
+                className="w-full h-full object-contain object-bottom drop-shadow-[0_20px_35px_rgba(34,97,146,0.32)] select-none pointer-events-none transition-transform duration-300 group-hover:scale-[1.02]"
+              />
+            </div>
+          </div>
 
-              <div className="glass-panel rounded-2xl p-5 animate-float hover:border-primary/50 transition-colors" style={{ animationDelay: "1s" }}>
-                <p className="font-display text-4xl font-bold text-gradient-gold">20+</p>
-                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase mt-1">Projects Built</p>
-              </div>
+          {/* SOJAN (Right Curtain) - Glides right and dissolves with blur on scroll */}
+          <div
+            className="flex-1 text-left select-none pl-0 sm:pl-1 md:pl-2 z-10 transition-transform duration-75 will-change-transform h-20 xs:h-24 sm:h-32 md:h-40 lg:h-52 xl:h-60 2xl:h-64 flex items-center justify-start"
+            style={{
+              transform: `translateX(${scrollProgress * curtainDistance}px)`,
+              opacity: Math.max(0, 1 - scrollProgress * 1.35),
+              filter: `blur(${scrollProgress * 8}px)`,
+            }}
+          >
+            <h1 className="sr-only">SOJAN</h1>
+            <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)]">
+              <TechText
+                text="SOJAN"
+                fontFamily="'Playfair Display', serif"
+                fontWeight={900}
+                fontSize={220}
+                reveal="letter"
+                dashLength={4}
+                dashGap={2}
+                specks={15}
+                color="#226192"
+                accentColor="#EF8557"
+                letterSpacing={-0.03}
+                reach={180}
+                softness={0.7}
+                strokeWidth={1.8}
+                speed={1}
+                lineStyle="dashed"
+                selection
+                labels
+                draggable
+                sweep={false}
+                align="left"
+              />
             </div>
           </div>
         </div>
-      </div>
 
+        {/* Bottom of the photo: Roles Tagline & Call-To-Action */}
+        <div
+          className="mt-4 sm:mt-6 flex flex-col items-center justify-center text-center z-20 transition-transform duration-75 will-change-transform px-3"
+          style={{
+            transform: `translateY(${scrollProgress * 35}px)`,
+            opacity: Math.max(0, 1 - scrollProgress * 1.5),
+            filter: `blur(${scrollProgress * 6}px)`,
+          }}
+        >
+          <div className="flex flex-wrap items-center justify-center gap-1.5 xs:gap-2 sm:gap-4 md:gap-6 text-[11px] xs:text-xs sm:text-base md:text-lg font-extrabold uppercase tracking-wider sm:tracking-widest text-[#226192]">
+            <span className="hover:text-[#722D37] transition-colors cursor-default">Software Developer</span>
+            <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#722D37]" />
+            <span className="hover:text-[#722D37] transition-colors cursor-default">Photographer</span>
+            <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#722D37]" />
+            <span className="hover:text-[#722D37] transition-colors cursor-default">Designer</span>
+          </div>
+
+          {/* Action CTAs - Responsive layout for mobile touch targets */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-5 w-full sm:w-auto max-w-xs sm:max-w-none">
+            <a
+              href="https://github.com/antonysojan18"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 bg-[#226192] text-[#FAF8F5] rounded-full font-bold text-xs sm:text-sm shadow-[0_8px_24px_rgba(34,97,146,0.28)] hover:shadow-[0_12px_32px_rgba(34,97,146,0.42)] hover:bg-[#184A71] hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <Github size={16} />
+              View GitHub
+            </a>
+            <a
+              href="/Antony_Sojan.pdf"
+              download="Antony_Sojan.pdf"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 bg-white/70 backdrop-blur-xl border border-white/80 text-[#226192] rounded-full font-bold text-xs sm:text-sm shadow-sm hover:bg-white hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <Download size={16} />
+              Resume
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
