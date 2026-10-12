@@ -441,8 +441,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
             <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)] flex items-center justify-end">
               {/* Live typing & fluid sliding HTML text layer */}
               <div
-                className={`absolute inset-0 flex items-center justify-end select-none transition-opacity duration-500 ${
-                  introState === "complete" ? "opacity-0 pointer-events-none" : "opacity-100"
+                className={`absolute inset-0 flex items-center justify-end select-none transition-opacity duration-700 ease-out ${
+                  isSplit ? "opacity-0 pointer-events-none" : "opacity-100"
                 }`}
               >
                 <span
@@ -460,10 +460,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
                 </span>
               </div>
 
-              {/* Interactive TechText canvas layer (activates once split finishes) */}
+              {/* Interactive TechText canvas layer (activates seamlessly during motion) */}
               <div
-                className={`w-full h-full transition-opacity duration-500 ${
-                  introState === "complete" ? "opacity-100" : "opacity-0 pointer-events-none"
+                className={`w-full h-full transition-opacity duration-700 ease-out ${
+                  isSplit ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
               >
                 <TechText
@@ -616,8 +616,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
             <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)] flex items-center justify-start">
               {/* Live typing & fluid sliding HTML text layer */}
               <div
-                className={`absolute inset-0 flex items-center justify-start select-none transition-opacity duration-500 ${
-                  introState === "complete" ? "opacity-0 pointer-events-none" : "opacity-100"
+                className={`absolute inset-0 flex items-center justify-start select-none transition-opacity duration-700 ease-out ${
+                  isSplit ? "opacity-0 pointer-events-none" : "opacity-100"
                 }`}
               >
                 <span
@@ -635,10 +635,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
                 </span>
               </div>
 
-              {/* Interactive TechText canvas layer (activates once split finishes) */}
+              {/* Interactive TechText canvas layer (activates seamlessly during motion) */}
               <div
-                className={`w-full h-full transition-opacity duration-500 ${
-                  introState === "complete" ? "opacity-100" : "opacity-0 pointer-events-none"
+                className={`w-full h-full transition-opacity duration-700 ease-out ${
+                  isSplit ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
               >
                 <TechText

@@ -293,22 +293,24 @@ const TechText = ({
       setFont(probe, s, size);
       let m = probe.measureText(s.text);
       const inkWidth = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-      const inkHeight = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
-
       let x = (width - inkWidth) / 2 + m.actualBoundingBoxLeft;
       if (s.align === 'right') {
-        x = width - inkWidth - width * 0.01 + m.actualBoundingBoxLeft;
+        x = width - inkWidth + m.actualBoundingBoxLeft;
       } else if (s.align === 'left') {
-        x = width * 0.01 + m.actualBoundingBoxLeft;
+        x = m.actualBoundingBoxLeft;
       }
 
-      const baseline = (height - inkHeight) / 2 + m.actualBoundingBoxAscent;
+      // Standardize baseline using capital letter height so all words (including words with descenders like 'J' in SOJAN)
+      // sit on the exact same baseline and match CSS flex centering perfectly
+      const capMetrics = probe.measureText('H');
+      const capHeight = capMetrics.actualBoundingBoxAscent;
+      const baseline = (height - capHeight) / 2 + capHeight;
       const next: WordLayout = {
         size,
         baseline,
         left: x - m.actualBoundingBoxLeft,
         right: x + m.actualBoundingBoxRight,
-        top: baseline - m.actualBoundingBoxAscent,
+        top: baseline - capHeight,
         bottom: baseline + m.actualBoundingBoxDescent,
       };
       word = next;
