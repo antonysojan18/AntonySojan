@@ -17,18 +17,34 @@ const greetings = [
   "Olá",
 ];
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  isIntroActive?: boolean;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ isIntroActive = false }) => {
   const [greetingIndex, setGreetingIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    if (isIntroActive) {
+      setGreetingIndex(0);
+      return;
+    }
+    let intervalTimer: NodeJS.Timeout;
+    const initialDelay = setTimeout(() => {
       setGreetingIndex((prev) => (prev + 1) % greetings.length);
-    }, 2400);
-    return () => clearInterval(timer);
-  }, []);
+      intervalTimer = setInterval(() => {
+        setGreetingIndex((prev) => (prev + 1) % greetings.length);
+      }, 2400);
+    }, 2800);
+
+    return () => {
+      clearTimeout(initialDelay);
+      if (intervalTimer) clearInterval(intervalTimer);
+    };
+  }, [isIntroActive]);
 
   // Smooth scroll listener for transition to second section
   useEffect(() => {
@@ -104,7 +120,11 @@ const HeroSection = () => {
       {/* Blended 4-in-1 Cinematic & Interactive Hero Background */}
       <HeroBackground tilt={tilt} />
 
-      <div className="relative max-w-7xl mx-auto w-full flex flex-col items-center">
+      <div
+        className={`relative max-w-7xl mx-auto w-full flex flex-col items-center transition-all duration-1000 ease-out ${
+          isIntroActive ? "opacity-85 scale-[0.985]" : "opacity-100 scale-100"
+        }`}
+      >
         {/* Top of the photo: "Hello, Its" with rolling Hello in different languages */}
         <div
           className="flex items-center justify-center translate-y-1 sm:translate-y-3 md:translate-y-4 z-30 transition-transform duration-75 will-change-transform"

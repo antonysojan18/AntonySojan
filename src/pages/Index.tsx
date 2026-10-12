@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import HeroSection from "@/components/HeroSection";
@@ -9,12 +10,19 @@ import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BlobCursor from "@/components/BlobCursor";
-
 import CursorGrid from "@/components/CursorGrid";
+import IntroScreen from "@/components/IntroScreen";
 
 const Index = () => {
+  const [isIntroActive, setIsIntroActive] = useState(true);
+
   return (
     <div className="min-h-screen bg-transparent">
+      {/* Architectural Intro Screen with Typing Animation */}
+      <IntroScreen
+        onTransitionStart={() => setIsIntroActive(false)}
+      />
+
       {/* 3D Liquid Chrome Blob Cursor in Deep Editorial Blue */}
       <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden" aria-hidden="true">
         <BlobCursor
@@ -44,10 +52,18 @@ const Index = () => {
       </div>
 
       <ScrollProgressBar />
-      <Navbar />
+
+      {/* Navbar with smooth float-down entrance once intro transitions */}
+      <div
+        className={`transition-all duration-700 ease-out ${
+          isIntroActive ? "opacity-0 -translate-y-4 pointer-events-none" : "opacity-100 translate-y-0"
+        }`}
+      >
+        <Navbar />
+      </div>
 
       <main>
-        <HeroSection />
+        <HeroSection isIntroActive={isIntroActive} />
         {/* Architectural Canvas Docking Layer for Lower Sections */}
         <div id="lower-sections" className="relative z-30 -mt-6 sm:-mt-10 rounded-t-[32px] sm:rounded-t-[48px] bg-[#EAE6DE] shadow-[0_-20px_45px_rgba(34,97,146,0.06)] border-t border-white/60">
           <ArchitecturalBackground />
