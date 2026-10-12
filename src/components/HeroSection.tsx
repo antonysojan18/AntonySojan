@@ -51,6 +51,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
   const [greetingIndex, setGreetingIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const photoContainerRef = useRef<HTMLDivElement>(null);
+  const antonyColRef = useRef<HTMLDivElement>(null);
+  const sojanColRef = useRef<HTMLDivElement>(null);
+  const [syncFontSize, setSyncFontSize] = useState<number | null>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -68,18 +71,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
   }, []);
 
   // Split offset: distance ANTONY and SOJAN shift inward so they sit together in the center during intro
-  const [splitShift, setSplitShift] = useState(isSmallScreen ? 70 : 155);
+  // Calculated from column boundaries to ensure 'Y' and 'S' NEVER overlap or intersect
+  const [splitShift, setSplitShift] = useState(isSmallScreen ? 60 : 120);
 
   useEffect(() => {
     const calcShift = () => {
-      if (photoContainerRef.current) {
-        // Measure visual layout gap
-        const w = photoContainerRef.current.offsetWidth;
-        // Compensate for negative margins on photo container
-        const shift = Math.max(w / 2 - (isSmallScreen ? 10 : 16), 45);
+      const colA = antonyColRef.current;
+      const colS = sojanColRef.current;
+      if (colA && colS) {
+        const rectA = colA.getBoundingClientRect();
+        const rectS = colS.getBoundingClientRect();
+        const gap = rectS.left - rectA.right;
+        // Desired clean, natural word space between ANTONY and SOJAN (36px desktop, 20px mobile)
+        const desiredSpace = isSmallScreen ? 20 : 36;
+        const shift = Math.max((gap - desiredSpace) / 2, 0);
         setSplitShift(shift);
       } else {
-        setSplitShift(isSmallScreen ? 70 : 155);
+        setSplitShift(isSmallScreen ? 60 : 120);
       }
     };
     calcShift();
@@ -377,13 +385,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
 
       {/* 3. Main Hero Interactive Layout (Elevated to z-30 above overlay) */}
       <div className="relative z-30 max-w-7xl mx-auto w-full flex flex-col items-center">
-        {/* Top greeting: "Hello, Its" (Types in place, then stays and rotates after split) */}
+        {/* Top greeting: "Hello, Its" (Starts lowered in intro, smoothly glides up into Hero position) */}
         <div
-          className="flex items-center justify-center translate-y-1 sm:translate-y-3 md:translate-y-4 z-30 transition-transform duration-75 will-change-transform"
+          className="flex items-center justify-center translate-y-1 sm:translate-y-3 md:translate-y-4 z-30 will-change-transform"
           style={{
-            transform: `translateY(${10 - scrollProgress * 24}px)`,
+            transform: !isSplit
+              ? `translateY(${isSmallScreen ? 44 : 68}px)`
+              : `translateY(${10 - scrollProgress * 24}px)`,
             opacity: Math.max(0, 1 - scrollProgress * 1.5),
             filter: `blur(${scrollProgress * 6}px)`,
+            transition:
+              introState === "splitting"
+                ? "transform 1200ms cubic-bezier(0.16, 1, 0.3, 1)"
+                : "transform 75ms linear",
           }}
         >
           <div className="perspective-600 h-8 sm:h-10 md:h-12 flex items-center justify-center">
@@ -414,6 +428,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
         <div className="relative w-full max-w-7xl mx-auto flex items-center justify-center my-0 px-0.5 sm:px-4">
           {/* ANTONY (Left Curtain) */}
           <div
+            ref={antonyColRef}
             className="flex-1 text-right select-none pr-0 sm:pr-1 md:pr-2 z-10 will-change-transform h-20 xs:h-24 sm:h-32 md:h-40 lg:h-52 xl:h-60 2xl:h-64 flex items-center justify-end"
             style={{
               transform: `translateX(${antonyX}px)`,
@@ -434,7 +449,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
                   className="font-black text-[#226192] tracking-[-0.03em] flex items-baseline justify-end"
                   style={{
                     fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: isSmallScreen ? "clamp(2rem, 11vw, 4.5rem)" : "clamp(4.2rem, 10.5vw, 9.5rem)",
+                    fontSize: syncFontSize ? `${syncFontSize}px` : (isSmallScreen ? "3.2rem" : "7rem"),
                     lineHeight: 1,
                   }}
                 >
@@ -453,6 +468,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
               >
                 <TechText
                   text="ANTONY"
+                  referenceText="ANTONY"
+                  onSizeCalculated={(sz) => setSyncFontSize(sz)}
                   fontFamily="'Playfair Display', serif"
                   fontWeight={900}
                   fontSize={220}
@@ -586,6 +603,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
 
           {/* SOJAN (Right Curtain) */}
           <div
+            ref={sojanColRef}
             className="flex-1 text-left select-none pl-0 sm:pl-1 md:pl-2 z-10 will-change-transform h-20 xs:h-24 sm:h-32 md:h-40 lg:h-52 xl:h-60 2xl:h-64 flex items-center justify-start"
             style={{
               transform: `translateX(${sojanX}px)`,
@@ -606,7 +624,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
                   className="font-black text-[#226192] tracking-[-0.03em] flex items-baseline justify-start"
                   style={{
                     fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: isSmallScreen ? "clamp(2rem, 11vw, 4.5rem)" : "clamp(4.2rem, 10.5vw, 9.5rem)",
+                    fontSize: syncFontSize ? `${syncFontSize}px` : (isSmallScreen ? "3.2rem" : "7rem"),
                     lineHeight: 1,
                   }}
                 >
@@ -625,6 +643,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
               >
                 <TechText
                   text="SOJAN"
+                  referenceText="ANTONY"
                   fontFamily="'Playfair Display', serif"
                   fontWeight={900}
                   fontSize={220}

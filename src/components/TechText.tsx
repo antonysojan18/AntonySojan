@@ -36,6 +36,8 @@ const signed = (value: number) => (value > 0 ? `+${value}` : value < 0 ? `−${-
 
 export interface TechTextProps {
   text?: string;
+  referenceText?: string;
+  onSizeCalculated?: (size: number) => void;
   fontFamily?: string;
   fontWeight?: number | string;
   fontSize?: number;
@@ -62,6 +64,8 @@ export interface TechTextProps {
 
 interface Settings {
   text: string;
+  referenceText?: string;
+  onSizeCalculated?: (size: number) => void;
   fontFamily: string;
   fontWeight: number | string;
   fontSize: number;
@@ -129,6 +133,8 @@ const TechText = ({
   align = 'center',
   className = '',
   style,
+  referenceText,
+  onSizeCalculated,
 }: TechTextProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -138,6 +144,8 @@ const TechText = ({
   useEffect(() => {
     settingsRef.current = {
       text,
+      referenceText,
+      onSizeCalculated,
       fontFamily,
       fontWeight,
       fontSize,
@@ -247,6 +255,7 @@ const TechText = ({
     const ensureLayout = (s: Settings) => {
       const key = [
         s.text,
+        s.referenceText || '',
         family(s),
         s.fontWeight,
         s.fontSize,
@@ -270,16 +279,19 @@ const TechText = ({
       }
 
       const probe = scratchCtx;
+      const refText = s.referenceText || s.text;
       setFont(probe, s, s.fontSize);
-      let m = probe.measureText(s.text);
+      let refM = probe.measureText(refText);
       const fit = Math.min(
         1,
-        (width * 0.98) / Math.max(m.actualBoundingBoxLeft + m.actualBoundingBoxRight, 1),
-        (height * 0.92) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
+        (width * 0.98) / Math.max(refM.actualBoundingBoxLeft + refM.actualBoundingBoxRight, 1),
+        (height * 0.92) / Math.max(refM.actualBoundingBoxAscent + refM.actualBoundingBoxDescent, 1)
       );
       const size = s.fontSize * fit;
+      s.onSizeCalculated?.(size);
+
       setFont(probe, s, size);
-      m = probe.measureText(s.text);
+      let m = probe.measureText(s.text);
       const inkWidth = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
       const inkHeight = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
 
