@@ -11,17 +11,11 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import BlobCursor from "@/components/BlobCursor";
 import CursorGrid from "@/components/CursorGrid";
-import IntroScreen from "@/components/IntroScreen";
-
 const Index = () => {
   const [isIntroActive, setIsIntroActive] = useState(true);
 
   return (
     <div className="min-h-screen bg-transparent">
-      {/* Architectural Intro Screen with Typing Animation */}
-      <IntroScreen
-        onTransitionStart={() => setIsIntroActive(false)}
-      />
 
       {/* 3D Liquid Chrome Blob Cursor in Deep Editorial Blue */}
       <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden" aria-hidden="true">
@@ -63,7 +57,7 @@ const Index = () => {
       </div>
 
       <main>
-        <HeroSection isIntroActive={isIntroActive} />
+        <HeroSection onIntroStateChange={(active) => setIsIntroActive(active)} />
         {/* Architectural Canvas Docking Layer for Lower Sections */}
         <div id="lower-sections" className="relative z-30 -mt-6 sm:-mt-10 rounded-t-[32px] sm:rounded-t-[48px] bg-[#EAE6DE] shadow-[0_-20px_45px_rgba(34,97,146,0.06)] border-t border-white/60">
           <ArchitecturalBackground />
