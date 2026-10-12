@@ -47,14 +47,8 @@ const Index = () => {
 
       <ScrollProgressBar />
 
-      {/* Navbar with smooth float-down entrance once intro transitions */}
-      <div
-        className={`transition-all duration-700 ease-out ${
-          isIntroActive ? "opacity-0 -translate-y-4 pointer-events-none" : "opacity-100 translate-y-0"
-        }`}
-      >
-        <Navbar />
-      </div>
+      {/* Always Visible Floating Navbar */}
+      <Navbar isIntroActive={isIntroActive} />
 
       <main>
         <HeroSection onIntroStateChange={(active) => setIsIntroActive(active)} />
