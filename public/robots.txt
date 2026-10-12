@@ -1,7 +1,15 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Priority search engine crawlers
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
 Allow: /
 
 User-agent: Twitterbot
@@ -10,5 +18,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# XML Sitemap
+Sitemap: https://antonysojan.com/sitemap.xml
