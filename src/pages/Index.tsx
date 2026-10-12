@@ -8,6 +8,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import PortfolioSection from "@/components/PortfolioSection";
 import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
+import CineRunner from "@/components/CineRunner";
 import Footer from "@/components/Footer";
 import BlobCursor from "@/components/BlobCursor";
 import CursorGrid from "@/components/CursorGrid";
@@ -81,6 +82,7 @@ const Index = () => {
             <PortfolioSection />
             <CertificatesSection />
             <ContactSection />
+            <CineRunner />
           </div>
         </div>
       </main>
