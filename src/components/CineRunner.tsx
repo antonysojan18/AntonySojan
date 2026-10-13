@@ -192,8 +192,13 @@ const CineRunner = () => {
 
     if (eng.state === "playing" && eng.player.jumpsLeft > 0) {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      // High, responsive jump arc properly scaled by DPR so mobile clears obstacles effortlessly
-      eng.player.vy = (eng.player.jumpsLeft === 2 ? -14 : -12) * dpr;
+      const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
+
+      // High, powerful jump velocity (boosted on mobile for high, satisfying leaps)
+      const baseJump = isMobile ? -18.5 : -15.5;
+      const doubleJump = isMobile ? -16.0 : -13.0;
+
+      eng.player.vy = (eng.player.jumpsLeft === 2 ? baseJump : doubleJump) * dpr;
       eng.player.jumpsLeft -= 1;
       eng.player.isGrounded = false;
       playSound("jump");
@@ -349,7 +354,7 @@ const CineRunner = () => {
 
         // Apply Player Gravity & Jump Physics (smooth 60fps-normalized physics)
         const frameRatio = Math.min(dt * 60, 2);
-        p.vy += 0.52 * dpr * frameRatio; // Smooth, floaty gravity
+        p.vy += 0.44 * dpr * frameRatio; // Smooth, floaty gravity with high hang time
         p.y += p.vy * frameRatio;
 
         if (p.y >= groundY - p.height * dpr) {
