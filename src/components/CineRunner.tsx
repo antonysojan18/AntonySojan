@@ -337,9 +337,9 @@ const CineRunner = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
 
-      // High, powerful jump velocity (boosted on mobile for high, satisfying leaps)
-      const baseJump = isMobile ? -18.5 : -15.5;
-      const doubleJump = isMobile ? -16.0 : -13.0;
+      // Snappy, normal jump on desktop; boosted clearance on mobile
+      const baseJump = isMobile ? -16.0 : -11.5;
+      const doubleJump = isMobile ? -14.0 : -10.0;
 
       const isFirstJump = eng.player.jumpsLeft === 2;
       eng.player.vy = (isFirstJump ? baseJump : doubleJump) * dpr;
@@ -498,7 +498,9 @@ const CineRunner = () => {
 
         // Apply Player Gravity & Jump Physics (smooth 60fps-normalized physics)
         const frameRatio = Math.min(dt * 60, 2);
-        p.vy += 0.44 * dpr * frameRatio; // Smooth, floaty gravity with high hang time
+        const isMobileScreen = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
+        const gravity = isMobileScreen ? 0.52 : 0.66;
+        p.vy += gravity * dpr * frameRatio; // Snappy and normal on desktop, comfortable float on mobile
         p.y += p.vy * frameRatio;
 
         if (p.y >= groundY - p.height * dpr) {
