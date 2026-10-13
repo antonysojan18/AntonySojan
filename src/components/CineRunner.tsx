@@ -118,6 +118,9 @@ const CineRunner = () => {
   }, [score]);
 
   // Game Engine State (Refs for 60fps canvas loop)
+  const lastTapTimeRef = useRef(0);
+  const gameOverTimeRef = useRef(0);
+
   const engineRef = useRef({
     player: {
       x: 75,
@@ -144,40 +147,14 @@ const CineRunner = () => {
     animId: 0,
   });
 
-  const jump = useCallback(() => {
-    const eng = engineRef.current;
-    if (eng.state === "idle" || eng.state === "gameover") {
-      startGame();
-      return;
-    }
-
-    if (eng.state === "playing" && eng.player.jumpsLeft > 0) {
-      eng.player.vy = eng.player.jumpsLeft === 2 ? -9.8 : -8.6;
-      eng.player.jumpsLeft -= 1;
-      eng.player.isGrounded = false;
-      playSound("jump");
-
-      // Jump dust particles
-      for (let i = 0; i < 6; i++) {
-        eng.particles.push({
-          x: eng.player.x + eng.player.width / 2,
-          y: eng.player.y + eng.player.height,
-          vx: (Math.random() - 0.5) * 3,
-          vy: Math.random() * -2,
-          alpha: 0.8,
-          color: "#226192",
-          size: Math.random() * 3 + 1.5,
-        });
-      }
-    }
-  }, [playSound]);
-
   const startGame = useCallback(() => {
     const eng = engineRef.current;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const isMobile = window.innerWidth < 640;
+    eng.player.x = isMobile ? 36 : 75;
     const groundY = canvas.height - 40 * dpr;
     eng.player.y = groundY - eng.player.height * dpr;
     eng.player.groundY = groundY;
@@ -188,16 +165,76 @@ const CineRunner = () => {
     eng.collectibles = [];
     eng.particles = [];
     eng.popups = [];
-    eng.speed = 4.5;
+    eng.speed = isMobile ? 4.2 : 4.5;
     eng.distance = 0;
     eng.currentScore = 0;
-    eng.lastObstacleX = 100; // Generous distance before first obstacle
+    eng.lastObstacleX = 120; // Generous runway before first obstacle
     eng.lastCollectibleX = 60;
     eng.state = "playing";
 
     setScore(0);
     setGameState("playing");
   }, []);
+
+  const jump = useCallback(() => {
+    const eng = engineRef.current;
+    if (eng.state === "idle") {
+      startGame();
+      return;
+    }
+
+    if (eng.state === "gameover") {
+      if (Date.now() - gameOverTimeRef.current > 350) {
+        startGame();
+      }
+      return;
+    }
+
+    if (eng.state === "playing" && eng.player.jumpsLeft > 0) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // High, responsive jump arc properly scaled by DPR so mobile clears obstacles effortlessly
+      eng.player.vy = (eng.player.jumpsLeft === 2 ? -14 : -12) * dpr;
+      eng.player.jumpsLeft -= 1;
+      eng.player.isGrounded = false;
+      playSound("jump");
+
+      // Jump dust particles
+      for (let i = 0; i < 6; i++) {
+        eng.particles.push({
+          x: eng.player.x * dpr + (eng.player.width * dpr) / 2,
+          y: eng.player.y + eng.player.height * dpr,
+          vx: (Math.random() - 0.5) * 3 * dpr,
+          vy: Math.random() * -2 * dpr,
+          alpha: 0.8,
+          color: "#226192",
+          size: Math.random() * 3 * dpr + 1.5 * dpr,
+        });
+      }
+    }
+  }, [playSound, startGame]);
+
+  // Touch and click handlers with instant touch feedback
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if ((e.target as HTMLElement)?.closest("button")) return;
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      lastTapTimeRef.current = Date.now();
+      jump();
+    },
+    [jump]
+  );
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if ((e.target as HTMLElement)?.closest("button")) return;
+      // Prevent synthetic click from duplicate jumping after touchstart
+      if (Date.now() - lastTapTimeRef.current < 400) return;
+      jump();
+    },
+    [jump]
+  );
 
   // Keyboard controls
   useEffect(() => {
@@ -225,6 +262,8 @@ const CineRunner = () => {
       const rect = canvas.getBoundingClientRect();
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
+      const isMobile = rect.width < 640;
+      engineRef.current.player.x = isMobile ? 36 : 75;
       engineRef.current.player.groundY = canvas.height - 40 * dpr;
       if (engineRef.current.state === "idle" || engineRef.current.state === "gameover") {
         engineRef.current.player.y = engineRef.current.player.groundY - engineRef.current.player.height * dpr;
@@ -308,9 +347,10 @@ const CineRunner = () => {
           eng.speed += dt * 0.02;
         }
 
-        // Apply Player Gravity & Jump Physics
-        p.vy += 26 * dt * dpr; // Smooth gravity
-        p.y += p.vy;
+        // Apply Player Gravity & Jump Physics (smooth 60fps-normalized physics)
+        const frameRatio = Math.min(dt * 60, 2);
+        p.vy += 0.52 * dpr * frameRatio; // Smooth, floaty gravity
+        p.y += p.vy * frameRatio;
 
         if (p.y >= groundY - p.height * dpr) {
           p.y = groundY - p.height * dpr;
@@ -436,6 +476,7 @@ const CineRunner = () => {
           ) {
             // GAME OVER!
             eng.state = "gameover";
+            gameOverTimeRef.current = Date.now();
             setGameState("gameover");
             playSound("gameover");
 
@@ -689,6 +730,10 @@ const CineRunner = () => {
           {/* Audio Toggle */}
           <button
             onClick={() => setIsMuted(!isMuted)}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
             className="p-1 sm:p-1.5 text-[#226192] hover:text-[#722D37] hover:bg-[#226192]/10 rounded-full transition-colors cursor-pointer"
             title={isMuted ? "Unmute audio" : "Mute audio"}
             aria-label="Toggle game audio"
@@ -701,7 +746,8 @@ const CineRunner = () => {
       {/* Full-Width Edge-to-Edge Arcade Track Container (Connected to Footer) */}
       <div
         ref={containerRef}
-        onClick={jump}
+        onClick={handleClick}
+        onTouchStart={handleTouchStart}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -710,19 +756,20 @@ const CineRunner = () => {
             jump();
           }
         }}
-        className="relative w-full h-[200px] sm:h-[225px] md:h-[245px] border-t border-[#226192]/20 overflow-hidden cursor-pointer group bg-[#FAF8F5] focus:outline-none"
+        style={{ touchAction: "manipulation" }}
+        className="relative w-full h-[200px] sm:h-[225px] md:h-[245px] border-t border-[#226192]/20 overflow-hidden cursor-pointer group bg-[#FAF8F5] focus:outline-none select-none"
       >
         {/* Main 2D Canvas spanning full viewport width */}
         <canvas ref={canvasRef} className="w-full h-full block" />
 
         {/* Top HUD Overlay (Score & Current Rank) */}
-        <div className="absolute top-3 left-4 sm:left-8 right-4 sm:right-8 flex items-center justify-between pointer-events-none">
-          <div className="flex items-center gap-2 bg-[#226192]/90 backdrop-blur-md text-[#FAF8F5] px-3 py-1 rounded-lg border border-white/20 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
+        <div className="absolute top-2.5 sm:top-3 left-3 sm:left-8 right-3 sm:right-8 flex items-center justify-between pointer-events-none">
+          <div className="flex items-center gap-2 bg-[#226192]/90 backdrop-blur-md text-[#FAF8F5] px-2.5 sm:px-3 py-1 rounded-lg border border-white/20 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
             <span className="text-[#EF8557]">SCORE:</span>
-            <span className="min-w-[36px]">{score}</span>
+            <span className="min-w-[32px] sm:min-w-[36px]">{score}</span>
           </div>
 
-          <div className="hidden xs:flex items-center gap-1.5 bg-[#FAF8F5]/90 backdrop-blur-md text-[#226192] px-3 py-1 rounded-lg border border-[#226192]/25 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
+          <div className="hidden xs:flex items-center gap-1.5 bg-[#FAF8F5]/90 backdrop-blur-md text-[#226192] px-2.5 sm:px-3 py-1 rounded-lg border border-[#226192]/25 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#226192]" />
             <span>ROLE: {currentRank}</span>
           </div>
@@ -730,15 +777,15 @@ const CineRunner = () => {
 
         {/* Start Screen Overlay */}
         {gameState === "idle" && (
-          <div className="absolute inset-0 bg-[#171D3B]/45 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center">
+          <div className="absolute inset-0 bg-[#171D3B]/45 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center pointer-events-none">
             <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#EF8557] text-[#FAF8F5] flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-transform mb-2">
               <Play size={20} className="ml-0.5" />
             </div>
             <h3 className="font-display font-black text-xl sm:text-2xl text-[#FAF8F5] tracking-tight mb-1">
               ROLL CAMERA
             </h3>
-            <p className="font-mono text-[11px] sm:text-xs text-[#FAF8F5]/85 tracking-wider">
-              TAP OR PRESS <span className="underline font-bold text-[#EF8557]">SPACE</span> TO JUMP (DOUBLE JUMP ENABLED)
+            <p className="font-mono text-[10px] sm:text-xs text-[#FAF8F5]/85 tracking-wider px-2">
+              TAP SCREEN OR PRESS <span className="underline font-bold text-[#EF8557]">SPACE</span> TO JUMP (DOUBLE JUMP ENABLED)
             </p>
           </div>
         )}
@@ -758,6 +805,10 @@ const CineRunner = () => {
 
             <button
               onClick={(e) => {
+                e.stopPropagation();
+                startGame();
+              }}
+              onTouchStart={(e) => {
                 e.stopPropagation();
                 startGame();
               }}
