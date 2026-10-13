@@ -45,13 +45,30 @@ const CineRunner = () => {
   const [gameState, setGameState] = useState<"idle" | "playing" | "gameover">("idle");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("as-cine-runner-muted");
+      if (saved !== null) return saved === "true";
+    }
+    return false; // Default unmuted so sound effects are heard immediately
+  });
   const [currentRank, setCurrentRank] = useState("Production Assistant");
+
+  // Toggle mute with local persistence
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => {
+      const next = !prev;
+      localStorage.setItem("as-cine-runner-muted", String(next));
+      return next;
+    });
+  }, []);
 
   // Audio Context (Synthesized sound effects without external assets)
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  const playSound = useCallback((type: "jump" | "collect" | "gameover") => {
+  type SoundType = "jump" | "doublejump" | "hit" | "start" | "restart" | "collect" | "gameover";
+
+  const playSound = useCallback((type: SoundType) => {
     if (isMuted) return;
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -64,36 +81,159 @@ const CineRunner = () => {
       }
 
       const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
 
       if (type === "jump") {
+        // Crisp, punchy arcade jump swoosh
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
         osc.type = "sine";
         osc.frequency.setValueAtTime(220, now);
-        osc.frequency.exponentialRampToValueAtTime(440, now + 0.12);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.12);
+        osc.frequency.exponentialRampToValueAtTime(560, now + 0.12);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
         osc.start(now);
         osc.stop(now + 0.12);
-      } else if (type === "collect") {
+      } else if (type === "doublejump") {
+        // High chirpy double jump boost
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
         osc.type = "triangle";
-        osc.frequency.setValueAtTime(523.25, now);
-        osc.frequency.setValueAtTime(659.25, now + 0.08);
-        osc.frequency.setValueAtTime(783.99, now + 0.16);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.24);
+        osc.frequency.setValueAtTime(460, now);
+        osc.frequency.exponentialRampToValueAtTime(980, now + 0.14);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
         osc.start(now);
-        osc.stop(now + 0.24);
-      } else if (type === "gameover") {
+        osc.stop(now + 0.14);
+      } else if (type === "hit") {
+        // Heavy, crunchy obstacle crash impact
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
         osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(220, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.25);
+        osc.frequency.setValueAtTime(170, now);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 0.22);
+
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
         osc.start(now);
-        osc.stop(now + 0.25);
+        osc.stop(now + 0.22);
+
+        // Clapper crack / punch punch layer
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+
+        osc2.type = "square";
+        osc2.frequency.setValueAtTime(280, now);
+        osc2.frequency.exponentialRampToValueAtTime(45, now + 0.1);
+
+        gain2.gain.setValueAtTime(0.22, now);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+        osc2.start(now);
+        osc2.stop(now + 0.1);
+      } else if (type === "start") {
+        // "Roll Camera / Action!" 4-note ascending fanfare
+        const notes = [440, 554.37, 659.25, 880];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.055);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.055);
+          gain.gain.linearRampToValueAtTime(0.18, now + idx * 0.055 + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.055 + 0.12);
+
+          osc.start(now + idx * 0.055);
+          osc.stop(now + idx * 0.055 + 0.13);
+        });
+      } else if (type === "restart") {
+        // "Take Two!" clapper snap + ascending rewind chirp
+        // 1. Sharp clapper snap transient
+        const snap = ctx.createOscillator();
+        const snapGain = ctx.createGain();
+        snap.connect(snapGain);
+        snapGain.connect(ctx.destination);
+
+        snap.type = "square";
+        snap.frequency.setValueAtTime(840, now);
+        snap.frequency.exponentialRampToValueAtTime(75, now + 0.04);
+
+        snapGain.gain.setValueAtTime(0.26, now);
+        snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        snap.start(now);
+        snap.stop(now + 0.04);
+
+        // 2. Bright ascending rewind sweep
+        const sweep = ctx.createOscillator();
+        const sweepGain = ctx.createGain();
+        sweep.connect(sweepGain);
+        sweepGain.connect(ctx.destination);
+
+        sweep.type = "triangle";
+        sweep.frequency.setValueAtTime(320, now + 0.03);
+        sweep.frequency.exponentialRampToValueAtTime(920, now + 0.18);
+
+        sweepGain.gain.setValueAtTime(0, now + 0.03);
+        sweepGain.gain.linearRampToValueAtTime(0.18, now + 0.04);
+        sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        sweep.start(now + 0.03);
+        sweep.stop(now + 0.19);
+      } else if (type === "collect") {
+        // Sparkling lens chime
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.05);
+          gain.gain.linearRampToValueAtTime(0.16, now + idx * 0.05 + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.12);
+
+          osc.start(now + idx * 0.05);
+          osc.stop(now + idx * 0.05 + 0.13);
+        });
+      } else if (type === "gameover") {
+        // Downward "Cut!" slide
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(70, now + 0.28);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        osc.start(now);
+        osc.stop(now + 0.28);
       }
     } catch {
       // Audio not supported or blocked
@@ -147,10 +287,13 @@ const CineRunner = () => {
     animId: 0,
   });
 
-  const startGame = useCallback(() => {
+  const startGame = useCallback((isRestart = false) => {
     const eng = engineRef.current;
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const wasGameOver = eng.state === "gameover" || isRestart;
+    playSound(wasGameOver ? "restart" : "start");
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const isMobile = window.innerWidth < 640;
@@ -174,18 +317,18 @@ const CineRunner = () => {
 
     setScore(0);
     setGameState("playing");
-  }, []);
+  }, [playSound]);
 
   const jump = useCallback(() => {
     const eng = engineRef.current;
     if (eng.state === "idle") {
-      startGame();
+      startGame(false);
       return;
     }
 
     if (eng.state === "gameover") {
       if (Date.now() - gameOverTimeRef.current > 350) {
-        startGame();
+        startGame(true);
       }
       return;
     }
@@ -198,10 +341,11 @@ const CineRunner = () => {
       const baseJump = isMobile ? -18.5 : -15.5;
       const doubleJump = isMobile ? -16.0 : -13.0;
 
-      eng.player.vy = (eng.player.jumpsLeft === 2 ? baseJump : doubleJump) * dpr;
+      const isFirstJump = eng.player.jumpsLeft === 2;
+      eng.player.vy = (isFirstJump ? baseJump : doubleJump) * dpr;
       eng.player.jumpsLeft -= 1;
       eng.player.isGrounded = false;
-      playSound("jump");
+      playSound(isFirstJump ? "jump" : "doublejump");
 
       // Jump dust particles
       for (let i = 0; i < 6; i++) {
@@ -479,11 +623,11 @@ const CineRunner = () => {
             py < obs.y + obs.height &&
             py + ph > obs.y
           ) {
-            // GAME OVER!
+            // GAME OVER - HIT OBSTACLE!
             eng.state = "gameover";
             gameOverTimeRef.current = Date.now();
             setGameState("gameover");
-            playSound("gameover");
+            playSound("hit");
 
             // Update high score
             if (eng.currentScore > highScore) {
@@ -734,10 +878,10 @@ const CineRunner = () => {
 
           {/* Audio Toggle */}
           <button
-            onClick={() => setIsMuted(!isMuted)}
+            onClick={toggleMute}
             onTouchStart={(e) => {
               e.stopPropagation();
-              setIsMuted(!isMuted);
+              toggleMute();
             }}
             className="p-1 sm:p-1.5 text-[#226192] hover:text-[#722D37] hover:bg-[#226192]/10 rounded-full transition-colors cursor-pointer"
             title={isMuted ? "Unmute audio" : "Mute audio"}
@@ -811,11 +955,11 @@ const CineRunner = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                startGame();
+                startGame(true);
               }}
               onTouchStart={(e) => {
                 e.stopPropagation();
-                startGame();
+                startGame(true);
               }}
               className="flex items-center gap-2 bg-[#FAF8F5] text-[#226192] px-5 py-2.5 rounded-full font-mono text-xs font-bold hover:bg-white hover:scale-105 active:scale-95 shadow-md transition-all cursor-pointer"
             >
