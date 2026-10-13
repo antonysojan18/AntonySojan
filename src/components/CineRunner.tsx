@@ -120,7 +120,7 @@ const CineRunner = () => {
   // Game Engine State (Refs for 60fps canvas loop)
   const engineRef = useRef({
     player: {
-      x: 60,
+      x: 75,
       y: 0,
       width: 32,
       height: 44,
@@ -134,7 +134,7 @@ const CineRunner = () => {
     collectibles: [] as Collectible[],
     particles: [] as Particle[],
     popups: [] as ScorePopup[],
-    speed: 5,
+    speed: 4.5,
     distance: 0,
     currentScore: 0,
     lastObstacleX: 0,
@@ -152,7 +152,7 @@ const CineRunner = () => {
     }
 
     if (eng.state === "playing" && eng.player.jumpsLeft > 0) {
-      eng.player.vy = eng.player.jumpsLeft === 2 ? -10.5 : -9;
+      eng.player.vy = eng.player.jumpsLeft === 2 ? -9.8 : -8.6;
       eng.player.jumpsLeft -= 1;
       eng.player.isGrounded = false;
       playSound("jump");
@@ -177,8 +177,9 @@ const CineRunner = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const groundY = canvas.height - 42;
-    eng.player.y = groundY - eng.player.height;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const groundY = canvas.height - 40 * dpr;
+    eng.player.y = groundY - eng.player.height * dpr;
     eng.player.groundY = groundY;
     eng.player.vy = 0;
     eng.player.jumpsLeft = 2;
@@ -187,11 +188,11 @@ const CineRunner = () => {
     eng.collectibles = [];
     eng.particles = [];
     eng.popups = [];
-    eng.speed = 5.2;
+    eng.speed = 4.5;
     eng.distance = 0;
     eng.currentScore = 0;
-    eng.lastObstacleX = canvas.width;
-    eng.lastCollectibleX = canvas.width + 100;
+    eng.lastObstacleX = 100; // Generous distance before first obstacle
+    eng.lastCollectibleX = 60;
     eng.state = "playing";
 
     setScore(0);
@@ -202,7 +203,6 @@ const CineRunner = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space" || e.code === "ArrowUp") {
-        // Prevent default spacebar scroll only if mouse is over or game is active
         if (gameState === "playing" || containerRef.current?.matches(":hover")) {
           e.preventDefault();
         }
@@ -225,8 +225,8 @@ const CineRunner = () => {
       const rect = canvas.getBoundingClientRect();
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
-      engineRef.current.player.groundY = canvas.height - 42 * dpr;
-      if (engineRef.current.state === "idle") {
+      engineRef.current.player.groundY = canvas.height - 40 * dpr;
+      if (engineRef.current.state === "idle" || engineRef.current.state === "gameover") {
         engineRef.current.player.y = engineRef.current.player.groundY - engineRef.current.player.height * dpr;
       }
     };
@@ -242,7 +242,7 @@ const CineRunner = () => {
       const eng = engineRef.current;
       const width = canvas.width;
       const height = canvas.height;
-      const groundY = height - 42 * dpr;
+      const groundY = height - 40 * dpr;
       const p = eng.player;
 
       // 1. Clear Canvas with architectural paper background
@@ -267,16 +267,16 @@ const CineRunner = () => {
       ctx.fillStyle = "rgba(34, 97, 146, 0.035)";
       ctx.beginPath();
       ctx.moveTo(0, groundY);
-      const hillOffset = (eng.distance * 0.15) % 300;
-      for (let x = 0; x <= width + 100; x += 100 * dpr) {
+      const hillOffset = (eng.distance * 0.15) % 400;
+      for (let x = 0; x <= width + 120; x += 120 * dpr) {
         const hillX = x - hillOffset * dpr;
-        ctx.lineTo(hillX, groundY - 35 * dpr - Math.sin((hillX + 200) * 0.01) * 15 * dpr);
+        ctx.lineTo(hillX, groundY - 32 * dpr - Math.sin((hillX + 200) * 0.008) * 14 * dpr);
       }
       ctx.lineTo(width, groundY);
       ctx.closePath();
       ctx.fill();
 
-      // 3. Ground Track - Deep Editorial Blue film strip
+      // 3. Ground Track - Deep Editorial Blue film strip extending to bottom
       ctx.fillStyle = "#226192";
       ctx.fillRect(0, groundY, width, height - groundY);
 
@@ -286,11 +286,11 @@ const CineRunner = () => {
       const sprocketSpacing = 16 * dpr;
       const sprocketOffset = (eng.trackOffset * 1.5) % sprocketSpacing;
       for (let sx = -sprocketOffset; sx < width; sx += sprocketSpacing) {
-        ctx.fillRect(sx, groundY + 12 * dpr, sprocketSize, sprocketSize * 1.6);
+        ctx.fillRect(sx, groundY + 11 * dpr, sprocketSize, sprocketSize * 1.6);
       }
 
       // Ground Top Trim Line
-      ctx.strokeStyle = "rgba(239, 133, 87, 0.6)";
+      ctx.strokeStyle = "rgba(239, 133, 87, 0.65)";
       ctx.lineWidth = 1.5 * dpr;
       ctx.beginPath();
       ctx.moveTo(0, groundY);
@@ -303,13 +303,13 @@ const CineRunner = () => {
         eng.currentScore = Math.floor(eng.distance / 10);
         setScore(eng.currentScore);
 
-        // Subtle speed ramp
-        if (eng.speed < 9.5) {
-          eng.speed += dt * 0.05;
+        // Relaxed, gradual speed ramp with comfortable cap
+        if (eng.speed < 7.5) {
+          eng.speed += dt * 0.02;
         }
 
         // Apply Player Gravity & Jump Physics
-        p.vy += 28 * dt * dpr; // Gravity
+        p.vy += 26 * dt * dpr; // Smooth gravity
         p.y += p.vy;
 
         if (p.y >= groundY - p.height * dpr) {
@@ -319,18 +319,18 @@ const CineRunner = () => {
           p.isGrounded = true;
         }
 
-        p.runFrame += dt * 14;
+        p.runFrame += dt * 13;
 
-        // Spawn Obstacles
-        if (eng.distance - eng.lastObstacleX > 220 + Math.random() * 200) {
+        // Spawn Obstacles with generous distance (simplified, less punishing)
+        if (eng.distance - eng.lastObstacleX > 550 + Math.random() * 450) {
           eng.lastObstacleX = eng.distance;
           const types: Obstacle["type"][] = ["clapper", "bug", "tripod", "error"];
           const chosen = types[Math.floor(Math.random() * types.length)];
-          const obsHeight = chosen === "tripod" ? 38 : chosen === "bug" ? 22 : 28;
-          const obsWidth = chosen === "tripod" ? 18 : chosen === "bug" ? 26 : 28;
+          const obsHeight = chosen === "tripod" ? 34 : chosen === "bug" ? 20 : 24;
+          const obsWidth = chosen === "tripod" ? 18 : chosen === "bug" ? 24 : 26;
 
           eng.obstacles.push({
-            x: width + 20,
+            x: width + 30,
             y: groundY - obsHeight * dpr,
             width: obsWidth * dpr,
             height: obsHeight * dpr,
@@ -339,11 +339,11 @@ const CineRunner = () => {
           });
         }
 
-        // Spawn Collectibles (Prime Lenses / Coffee)
-        if (eng.distance - eng.lastCollectibleX > 320 + Math.random() * 250) {
+        // Spawn Collectibles (Prime Lenses / Coffee) frequently in the clear zones
+        if (eng.distance - eng.lastCollectibleX > 280 + Math.random() * 260) {
           eng.lastCollectibleX = eng.distance;
           const isLens = Math.random() > 0.4;
-          const cY = groundY - (40 + Math.random() * 45) * dpr;
+          const cY = groundY - (38 + Math.random() * 40) * dpr;
           eng.collectibles.push({
             x: width + 20,
             y: cY,
@@ -421,12 +421,12 @@ const CineRunner = () => {
           ctx.fillText("404", obs.x + obs.width / 2, obs.y + obs.height / 2 + 3 * dpr);
         }
 
-        // Collision Check (AABB with tight padding)
+        // Collision Check (Forgiving AABB with relaxed padding)
         if (eng.state === "playing") {
-          const px = p.x * dpr + 4 * dpr;
-          const py = p.y + 4 * dpr;
-          const pw = (p.width - 8) * dpr;
-          const ph = (p.height - 6) * dpr;
+          const px = p.x * dpr + 6 * dpr;
+          const py = p.y + 6 * dpr;
+          const pw = (p.width - 12) * dpr;
+          const ph = (p.height - 9) * dpr;
 
           if (
             px < obs.x + obs.width &&
@@ -461,7 +461,7 @@ const CineRunner = () => {
         }
 
         // Remove off-screen obstacles
-        if (obs.x + obs.width < -50) {
+        if (obs.x + obs.width < -60) {
           eng.obstacles.splice(i, 1);
         }
       }
@@ -663,114 +663,111 @@ const CineRunner = () => {
   }, []);
 
   return (
-    <section id="arcade" className="relative py-8 sm:py-12 bg-transparent select-none">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-3 px-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#EF8557] animate-pulse" />
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-[#226192] uppercase flex items-center gap-1.5">
-              <Clapperboard size={13} className="text-[#226192]" />
-              INTERACTIVE MINI-GAME // CINE RUNNER
-            </span>
+    <section id="arcade" className="relative pt-8 sm:pt-12 pb-0 bg-transparent select-none w-full">
+      {/* Top Header Row with Meta & Badges */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2.5 sm:mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#EF8557] animate-pulse" />
+          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-[#226192] uppercase flex items-center gap-1.5">
+            <Clapperboard size={13} className="text-[#226192]" />
+            INTERACTIVE MINI-GAME // CINE RUNNER
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Controls Hint */}
+          <span className="hidden md:inline text-[10px] font-mono text-[#226192]/65">
+            SPACE / UP ARROW / TAP TO JUMP
+          </span>
+
+          {/* High Score Badge */}
+          <div className="flex items-center gap-1 text-[10px] sm:text-xs font-mono font-bold text-[#226192]/80 bg-[#226192]/10 px-2.5 py-0.5 rounded-md border border-[#226192]/20">
+            <Trophy size={11} className="text-[#EF8557]" />
+            <span>BEST: {highScore}</span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* High Score Badge */}
-            <div className="flex items-center gap-1 text-[10px] sm:text-xs font-mono font-bold text-[#226192]/80 bg-[#226192]/10 px-2 py-0.5 rounded-md border border-[#226192]/20">
-              <Trophy size={11} className="text-[#EF8557]" />
-              <span>BEST: {highScore}</span>
-            </div>
+          {/* Audio Toggle */}
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            className="p-1 sm:p-1.5 text-[#226192] hover:text-[#722D37] hover:bg-[#226192]/10 rounded-full transition-colors cursor-pointer"
+            title={isMuted ? "Unmute audio" : "Mute audio"}
+            aria-label="Toggle game audio"
+          >
+            {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+          </button>
+        </div>
+      </div>
 
-            {/* Audio Toggle */}
+      {/* Full-Width Edge-to-Edge Arcade Track Container (Connected to Footer) */}
+      <div
+        ref={containerRef}
+        onClick={jump}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            e.preventDefault();
+            jump();
+          }
+        }}
+        className="relative w-full h-[200px] sm:h-[225px] md:h-[245px] border-t border-[#226192]/20 overflow-hidden cursor-pointer group bg-[#FAF8F5] focus:outline-none"
+      >
+        {/* Main 2D Canvas spanning full viewport width */}
+        <canvas ref={canvasRef} className="w-full h-full block" />
+
+        {/* Top HUD Overlay (Score & Current Rank) */}
+        <div className="absolute top-3 left-4 sm:left-8 right-4 sm:right-8 flex items-center justify-between pointer-events-none">
+          <div className="flex items-center gap-2 bg-[#226192]/90 backdrop-blur-md text-[#FAF8F5] px-3 py-1 rounded-lg border border-white/20 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
+            <span className="text-[#EF8557]">SCORE:</span>
+            <span className="min-w-[36px]">{score}</span>
+          </div>
+
+          <div className="hidden xs:flex items-center gap-1.5 bg-[#FAF8F5]/90 backdrop-blur-md text-[#226192] px-3 py-1 rounded-lg border border-[#226192]/25 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#226192]" />
+            <span>ROLE: {currentRank}</span>
+          </div>
+        </div>
+
+        {/* Start Screen Overlay */}
+        {gameState === "idle" && (
+          <div className="absolute inset-0 bg-[#171D3B]/45 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center">
+            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#EF8557] text-[#FAF8F5] flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-transform mb-2">
+              <Play size={20} className="ml-0.5" />
+            </div>
+            <h3 className="font-display font-black text-xl sm:text-2xl text-[#FAF8F5] tracking-tight mb-1">
+              ROLL CAMERA
+            </h3>
+            <p className="font-mono text-[11px] sm:text-xs text-[#FAF8F5]/85 tracking-wider">
+              TAP OR PRESS <span className="underline font-bold text-[#EF8557]">SPACE</span> TO JUMP (DOUBLE JUMP ENABLED)
+            </p>
+          </div>
+        )}
+
+        {/* Game Over Screen Overlay */}
+        {gameState === "gameover" && (
+          <div className="absolute inset-0 bg-[#171D3B]/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center animate-in fade-in duration-200">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#EF8557] font-bold mb-0.5">
+              CUT! SCENE WRAPPED
+            </span>
+            <h3 className="font-display font-black text-2xl sm:text-3xl text-[#FAF8F5] tracking-tight mb-1">
+              SCORE: {score}
+            </h3>
+            <p className="font-mono text-[11px] text-[#FAF8F5]/80 mb-3">
+              ACHIEVED RANK: <span className="text-[#EF8557] font-bold">{currentRank}</span>
+            </p>
+
             <button
-              onClick={() => setIsMuted(!isMuted)}
-              className="p-1 sm:p-1.5 text-[#226192] hover:text-[#722D37] hover:bg-[#226192]/10 rounded-full transition-colors"
-              title={isMuted ? "Unmute audio" : "Mute audio"}
-              aria-label="Toggle game audio"
+              onClick={(e) => {
+                e.stopPropagation();
+                startGame();
+              }}
+              className="flex items-center gap-2 bg-[#FAF8F5] text-[#226192] px-5 py-2.5 rounded-full font-mono text-xs font-bold hover:bg-white hover:scale-105 active:scale-95 shadow-md transition-all cursor-pointer"
             >
-              {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+              <RotateCcw size={13} />
+              <span>TAKE TWO (RESTART)</span>
             </button>
           </div>
-        </div>
-
-        {/* Arcade Box Container */}
-        <div
-          ref={containerRef}
-          onClick={jump}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === " " || e.key === "Enter") {
-              e.preventDefault();
-              jump();
-            }
-          }}
-          className="relative w-full h-[230px] sm:h-[260px] rounded-2xl sm:rounded-3xl border border-[#226192]/30 shadow-[0_12px_36px_rgba(34,97,146,0.14)] overflow-hidden cursor-pointer group bg-[#FAF8F5] focus:outline-none focus:ring-2 focus:ring-[#226192]/40"
-        >
-          {/* Main 2D Canvas */}
-          <canvas ref={canvasRef} className="w-full h-full block" />
-
-          {/* Top HUD Overlay (Score & Current Rank) */}
-          <div className="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-            <div className="flex items-center gap-2 bg-[#226192]/90 backdrop-blur-md text-[#FAF8F5] px-2.5 py-1 rounded-lg border border-white/20 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-sm">
-              <span className="text-[#EF8557]">SCORE:</span>
-              <span className="min-w-[36px]">{score}</span>
-            </div>
-
-            <div className="hidden xs:flex items-center gap-1.5 bg-[#FAF8F5]/90 backdrop-blur-md text-[#226192] px-2.5 py-1 rounded-lg border border-[#226192]/25 text-[10px] font-mono font-bold tracking-wider shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#226192]" />
-              <span>ROLE: {currentRank}</span>
-            </div>
-          </div>
-
-          {/* Start Screen Overlay */}
-          {gameState === "idle" && (
-            <div className="absolute inset-0 bg-[#171D3B]/45 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#EF8557] text-[#FAF8F5] flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-transform mb-2">
-                <Play size={20} className="ml-0.5" />
-              </div>
-              <h3 className="font-display font-black text-xl sm:text-2xl text-[#FAF8F5] tracking-tight mb-1">
-                ROLL CAMERA
-              </h3>
-              <p className="font-mono text-[11px] sm:text-xs text-[#FAF8F5]/85 tracking-wider">
-                TAP OR PRESS <span className="underline font-bold text-[#EF8557]">SPACE</span> TO JUMP (DOUBLE JUMP ENABLED)
-              </p>
-            </div>
-          )}
-
-          {/* Game Over Screen Overlay */}
-          {gameState === "gameover" && (
-            <div className="absolute inset-0 bg-[#171D3B]/70 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center animate-in fade-in duration-200">
-              <span className="text-xs font-mono uppercase tracking-widest text-[#EF8557] font-bold mb-0.5">
-                CUT! SCENE WRAPPED
-              </span>
-              <h3 className="font-display font-black text-2xl sm:text-3xl text-[#FAF8F5] tracking-tight mb-1">
-                SCORE: {score}
-              </h3>
-              <p className="font-mono text-[11px] text-[#FAF8F5]/80 mb-3">
-                ACHIEVED RANK: <span className="text-[#EF8557] font-bold">{currentRank}</span>
-              </p>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  startGame();
-                }}
-                className="flex items-center gap-2 bg-[#FAF8F5] text-[#226192] px-4 py-2 rounded-full font-mono text-xs font-bold hover:bg-white hover:scale-105 active:scale-95 shadow-md transition-all cursor-pointer"
-              >
-                <RotateCcw size={13} />
-                <span>TAKE TWO (RESTART)</span>
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Subtle controls hint underneath */}
-        <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-[#226192]/60 mt-2 px-1">
-          <span>HINT: DODGE BUGS & 404s // COLLECT GOLDEN PRIMES (+50)</span>
-          <span>CONTROLS: SPACE / UP ARROW / TAP</span>
-        </div>
+        )}
       </div>
     </section>
   );
