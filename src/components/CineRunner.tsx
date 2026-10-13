@@ -668,9 +668,9 @@ const CineRunner = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2.5 sm:mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#EF8557] animate-pulse" />
-          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-[#226192] uppercase flex items-center gap-1.5">
+          <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-[#226192] flex items-center gap-1.5">
             <Clapperboard size={13} className="text-[#226192]" />
-            INTERACTIVE MINI-GAME // CINE RUNNER
+            CINE Runner
           </span>
         </div>
 
