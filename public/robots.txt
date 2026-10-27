@@ -6,6 +6,9 @@ Allow: /
 User-agent: Googlebot
 Allow: /
 
+User-agent: Googlebot-Image
+Allow: /
+
 User-agent: Bingbot
 Allow: /
 
@@ -19,4 +22,4 @@ User-agent: facebookexternalhit
 Allow: /
 
 # XML Sitemap
-Sitemap: https://antonysojan.com/sitemap.xml
+Sitemap: https://www.antonysojan.space/sitemap.xml

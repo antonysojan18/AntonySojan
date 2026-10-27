@@ -146,7 +146,7 @@ const projects: Project[] = [
     technologies: ["React", "TypeScript", "Vite", "Tailwind CSS"],
     category: "Web Development",
     githubUrl: "https://github.com/antonysojan18/AntonySojan",
-    liveUrl: "https://antonysojan.vercel.app/",
+    liveUrl: "https://www.antonysojan.space",
     image: portfolioCover,
   },
 ];

@@ -385,6 +385,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
 
       {/* 3. Main Hero Interactive Layout (Elevated to z-30 above overlay) */}
       <div className="relative z-30 max-w-7xl mx-auto w-full flex flex-col items-center">
+        {/* Authoritative Single H1 Heading for SEO & Screen Readers */}
+        <h1 className="sr-only">
+          Antony Sojan — Full-Stack Software Developer, UI/UX Designer &amp; Creative Technologist
+        </h1>
+
         {/* Top greeting: "Hello, Its" (Starts lowered in intro, smoothly glides up into Hero position) */}
         <div
           className="flex items-center justify-center translate-y-1 sm:translate-y-3 md:translate-y-4 z-30 will-change-transform"
@@ -437,7 +442,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
               transition: nameTransition,
             }}
           >
-            <h1 className="sr-only">ANTONY</h1>
+            <span className="sr-only" aria-hidden="true">ANTONY</span>
             <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)] flex items-center justify-end">
               {/* Live typing & fluid sliding HTML text layer */}
               <div
@@ -595,7 +600,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
             <div className="relative w-[195px] xs:w-[225px] sm:w-68 md:w-80 lg:w-[370px] xl:w-[430px] aspect-[4/5] max-h-[400px] sm:max-h-[460px] flex items-end justify-center">
               <img
                 src={antonyProfile}
-                alt="Antony Sojan"
+                alt="Antony Sojan — Full-Stack Developer & UI/UX Designer"
                 className="w-full h-full object-contain object-bottom drop-shadow-[0_20px_35px_rgba(34,97,146,0.32)] select-none pointer-events-none transition-transform duration-300 group-hover:scale-[1.02]"
               />
             </div>
@@ -612,7 +617,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onIntroStateChange }) => {
               transition: nameTransition,
             }}
           >
-            <h1 className="sr-only">SOJAN</h1>
+            <span className="sr-only" aria-hidden="true">SOJAN</span>
             <div className="w-full h-full relative drop-shadow-[0_8px_16px_rgba(34,97,146,0.12)] flex items-center justify-start">
               {/* Live typing & fluid sliding HTML text layer */}
               <div

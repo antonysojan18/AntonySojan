@@ -1,0 +1,16 @@
+{
+  "name": "Antony Sojan — Official Portfolio",
+  "short_name": "Antony Sojan",
+  "description": "Official portfolio of Antony Sojan — Full-Stack Developer, UI/UX Designer & Creative Technologist.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EAE6DE",
+  "theme_color": "#EAE6DE",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -93,7 +93,7 @@ const AboutSection = () => {
             Creative <span className="text-gradient-gold">Developer</span> & Visual Artist
           </h2>
           <p className="font-body text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg">
-            A fresher and freelancer with strong cross-domain expertise, bridging the gap between
+            Antony Sojan is a developer and visual artist with strong cross-domain expertise, bridging the gap between
             technology and creativity to deliver exceptional digital experiences.
           </p>
         </div>
