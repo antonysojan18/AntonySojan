@@ -138,7 +138,7 @@ const AboutSection = () => {
           <div className="flex items-center gap-2 mb-3.5 sm:mb-4 px-1">
             <span className="w-2 h-2 rounded-full bg-[#226192] animate-pulse" />
             <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#226192]">
-              Studio Venture
+              My Company
             </span>
           </div>
 
@@ -170,7 +170,7 @@ const AboutSection = () => {
                   {/* Brand & Role */}
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/15 border border-white/20 text-[#FAF8F5] text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-1.5 sm:mb-2">
-                      Independent development studio
+                      Software Development Studio
                     </div>
                     <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-[#FAF8F5] leading-tight">
                       TOCHI <span className="font-sans font-medium text-[#FAF8F5]/90">.dev studio</span>
